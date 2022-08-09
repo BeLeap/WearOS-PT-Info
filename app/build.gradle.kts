@@ -15,6 +15,10 @@ android {
 
     }
 
+    buildFeatures {
+        compose = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -34,6 +38,10 @@ dependencies {
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    // General Jetpack Compose
+    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
 
     // WearOS Jetpack Compose
     implementation("androidx.wear.compose:compose-foundation:1.0.0")
