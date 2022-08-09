@@ -1,5 +1,7 @@
 package codes.beleap.wearos_pt_info.network
 
+import codes.beleap.wearos_pt_info.R
+import com.google.android.gms.common.api.internal.ApiKey
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -12,13 +14,14 @@ private val moshi = Moshi.Builder()
     .build()
 
 private val retrofit = Retrofit.Builder()
-    .baseUrl("http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/")
+    .baseUrl("http://swopenapi.seoul.go.kr/api/subway/")
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
 
 interface SubwayArrivalInfoService {
-    @GET("0/{count}/{target}")
+    @GET("{apiKey}/json/realtimeStationArrival/0/{count}/{target}")
     suspend fun getSubwayArrivalInfo(
+        @Path("apiKey") apiKey: String,
         @Path("count") count: Int,
         @Path("target") target: String,
     ): SubwayArrivalInfoResponse

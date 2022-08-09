@@ -12,11 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.core.DataStore
 import androidx.navigation.NavController
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
@@ -49,6 +49,7 @@ fun SubwayArrivalInfoView(
     ) {
         val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
         val settings: MutableState<Settings> = remember { mutableStateOf(Settings.default()) }
+        val apiKey = stringResource(R.string.subwayInfoApiKey)
 
         LaunchedEffect(key1 = null) {
             settings.value = settingsRepository.getSettings()
@@ -56,6 +57,7 @@ fun SubwayArrivalInfoView(
             val apiService = SubwayArrivalInfoApi.retrofitService
             try {
                 response.value = apiService.getSubwayArrivalInfo(
+                    apiKey = apiKey,
                     count = settings.value.count,
                     target = settings.value.target,
                 )
