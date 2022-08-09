@@ -48,6 +48,7 @@ dependencies {
     // General Jetpack Compose
     implementation("androidx.activity:activity-compose:1.5.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
+    implementation("androidx.compose.material:material-icons-extended:1.2.0")
 
     // WearOS Jetpack Compose
     implementation("androidx.wear.compose:compose-foundation:1.0.0")

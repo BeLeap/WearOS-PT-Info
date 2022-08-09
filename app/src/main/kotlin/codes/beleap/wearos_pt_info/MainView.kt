@@ -2,11 +2,14 @@ package codes.beleap.wearos_pt_info
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,6 +108,15 @@ fun MainView() {
                             )
                         }
                     }
+                }
+            }
+
+            item {
+                CompactButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        Icons.Rounded.Settings,
+                        contentDescription = "Settings",
+                    )
                 }
             }
         }
