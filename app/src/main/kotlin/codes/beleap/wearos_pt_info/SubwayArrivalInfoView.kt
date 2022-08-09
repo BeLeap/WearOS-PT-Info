@@ -24,6 +24,7 @@ import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
+import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,11 +54,15 @@ fun SubwayArrivalInfoView(
             settings.value = settingsRepository.getSettings()
 
             val apiService = SubwayArrivalInfoApi.retrofitService
-            response.value = apiService.getSubwayArrivalInfo(
-                count = settings.value.count,
-                target = settings.value.target,
-            )
-            Log.d("DataFetcher", response.value.toString())
+            try {
+                response.value = apiService.getSubwayArrivalInfo(
+                    count = settings.value.count,
+                    target = settings.value.target,
+                )
+                Log.d("DataFetcher", response.value.toString())
+            } catch (e: JsonDataException) {
+                Log.w("DataFetcher", "Malformed response", e)
+            }
         }
 
         val coroutineScope = rememberCoroutineScope()

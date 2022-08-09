@@ -5,10 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import codes.beleap.wearos_pt_info.settings.CountSettingView
-import codes.beleap.wearos_pt_info.settings.Settings
-import codes.beleap.wearos_pt_info.settings.SettingsRepository
-import codes.beleap.wearos_pt_info.settings.SettingsView
+import codes.beleap.wearos_pt_info.settings.*
 
 @Composable
 fun MainView(settingStore: DataStore<Settings>) {
@@ -37,7 +34,7 @@ fun MainView(settingStore: DataStore<Settings>) {
             )
         }
         composable("settings/target") {
-            CountSettingView(
+            TargetSettingView(
                 settingsRepository = settingsRepository,
             )
         }
