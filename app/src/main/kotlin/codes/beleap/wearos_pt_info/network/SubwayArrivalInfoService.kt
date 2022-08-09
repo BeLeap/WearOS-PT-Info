@@ -1,9 +1,7 @@
 package codes.beleap.wearos_pt_info.network
 
-import codes.beleap.wearos_pt_info.R
-import com.google.android.gms.common.api.internal.ApiKey
-import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET

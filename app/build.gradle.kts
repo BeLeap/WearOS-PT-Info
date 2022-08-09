@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,6 +9,10 @@ plugins {
     kotlin("plugin.serialization") version "1.5.31"
 }
 
+val apiKeyPropertiesFile = rootProject.file("apiKey.properties")
+val apiKeyProperties = Properties()
+apiKeyProperties.load(FileInputStream(apiKeyPropertiesFile))
+
 android {
     compileSdk = 32
 
@@ -13,9 +20,12 @@ android {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
         targetSdk = 32
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 7
+        versionName = "0.0.7"
 
+        buildConfigField("String", "SUBWAY_INFO_API_KEY",
+            apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
+        )
     }
 
     buildFeatures {
