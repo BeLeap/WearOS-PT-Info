@@ -10,14 +10,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Preview
@@ -64,20 +62,20 @@ fun MainView() {
                     Text("서울역 지하철 도착 정보")
                 }
             }
-            items(response.value?.realtimeArrivalList?.size ?: 0) {
-                val info = response.value?.realtimeArrivalList?.get(it)
-                val index = it
 
-                info?.let {
+            response.value?.realtimeArrivalList?.let {
+                items(it.size) { idx ->
+                    val info = it[idx]
+
                     TitleCard(
                         onClick = {
                             coroutineScope.launch {
-                                listState.animateScrollToItem(index + 1, scrollOffset)
+                                listState.animateScrollToItem(idx + 1, scrollOffset)
                             }
                         },
                         title = {
                             Text(
-                                it.trainLineNm,
+                                info.trainLineNm,
                                 softWrap = true,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
