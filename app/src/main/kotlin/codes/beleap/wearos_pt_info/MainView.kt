@@ -22,6 +22,7 @@ fun MainView(settingStore: DataStore<Settings>) {
         composable("subway_info") {
             SubwayArrivalInfoView(
                 navController = navController,
+                settingsRepository = settingsRepository,
             )
         }
         composable("settings") {

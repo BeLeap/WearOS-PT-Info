@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -16,8 +17,11 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface SubwayArrivalInfoService {
-    @GET("0/5/서울")
-    suspend fun getSubwayArrivalInfo(): SubwayArrivalInfoResponse
+    @GET("0/{count}/{target}")
+    suspend fun getSubwayArrivalInfo(
+        @Path("count") count: Int,
+        @Path("target") target: String,
+    ): SubwayArrivalInfoResponse
 }
 
 object SubwayArrivalInfoApi {

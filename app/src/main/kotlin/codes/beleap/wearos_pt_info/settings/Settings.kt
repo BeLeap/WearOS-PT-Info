@@ -12,13 +12,17 @@ import java.io.OutputStream
 data class Settings(
     val count: Int,
     val target: String,
-)
+) {
+    companion object {
+        fun default() = Settings(
+            count = 5,
+            target = "서울",
+        )
+    }
+}
 
 object SettingsSerializer: Serializer<Settings> {
-    override val defaultValue: Settings = Settings(
-        count = 5,
-        target = "서울",
-    )
+    override val defaultValue: Settings = Settings.default()
 
     override suspend fun readFrom(input: InputStream): Settings {
         try {

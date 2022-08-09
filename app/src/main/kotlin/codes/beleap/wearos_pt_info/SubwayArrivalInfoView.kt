@@ -23,11 +23,13 @@ import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
 import codes.beleap.wearos_pt_info.settings.Settings
+import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import kotlinx.coroutines.launch
 
 @Composable
 fun SubwayArrivalInfoView(
     navController: NavController,
+    settingsRepository: SettingsRepository,
 ) {
     val listState = rememberScalingLazyListState()
     val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
@@ -45,10 +47,16 @@ fun SubwayArrivalInfoView(
         }
     ) {
         val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
+        val settings: MutableState<Settings> = remember { mutableStateOf(Settings.default()) }
 
         LaunchedEffect(key1 = null) {
+            settings.value = settingsRepository.getSettings()
+
             val apiService = SubwayArrivalInfoApi.retrofitService
-            response.value = apiService.getSubwayArrivalInfo()
+            response.value = apiService.getSubwayArrivalInfo(
+                count = settings.value.count,
+                target = settings.value.target,
+            )
             Log.d("DataFetcher", response.value.toString())
         }
 
@@ -67,7 +75,7 @@ fun SubwayArrivalInfoView(
         ) {
             item {
                 ListHeader {
-                    Text("서울역 지하철 도착 정보")
+                    Text("${settings.value.target}역 지하철 도착 정보")
                 }
             }
 
