@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
 }
 
 android {
@@ -55,5 +56,6 @@ dependencies {
 
     // Retrofit2
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.3")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 }
