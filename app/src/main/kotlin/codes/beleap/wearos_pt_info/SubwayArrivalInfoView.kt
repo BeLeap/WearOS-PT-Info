@@ -1,10 +1,7 @@
 package codes.beleap.wearos_pt_info
 
 import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
@@ -76,7 +73,9 @@ fun SubwayArrivalInfoView(
         ScalingLazyColumn(
             contentPadding = PaddingValues(top = 40.dp),
             state = listState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp),
             autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
             verticalArrangement = Arrangement.spacedBy(itemSpacing),
         ) {
