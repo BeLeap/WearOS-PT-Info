@@ -34,4 +34,9 @@ dependencies {
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    // WearOS Jetpack Compose
+    implementation("androidx.wear.compose:compose-foundation:1.0.0")
+    implementation("androidx.wear.compose:compose-material:1.0.0")
+    implementation("androidx.wear.compose:compose-navigation:1.0.0")
 }
