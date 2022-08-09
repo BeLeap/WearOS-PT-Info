@@ -17,7 +17,7 @@ fun MainView(settingStore: DataStore<Settings>) {
 
     SwipeDismissableNavHost(
         navController = navController,
-        startDestination = "settings",
+        startDestination = "subway_info",
     ) {
         composable("subway_info") {
             SubwayArrivalInfoView(
