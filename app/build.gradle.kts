@@ -25,10 +25,15 @@ android {
             setProguardFiles(listOf("proguard-android-optimize.txt", "proguard-rules.pro"))
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     buildToolsVersion = "32.1.0-rc1"
 }
 
@@ -47,4 +52,8 @@ dependencies {
     implementation("androidx.wear.compose:compose-foundation:1.0.0")
     implementation("androidx.wear.compose:compose-material:1.0.0")
     implementation("androidx.wear.compose:compose-navigation:1.0.0")
+
+    // Retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }
