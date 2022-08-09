@@ -1,16 +1,22 @@
 package codes.beleap.wearos_pt_info
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import android.util.Log
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
+import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -37,6 +43,7 @@ fun MainView() {
         LaunchedEffect(key1 = null) {
             val apiService = SubwayArrivalInfoApi.retrofitService
             response.value = apiService.getSubwayArrivalInfo()
+            Log.d("DataFetcher", response.value.toString())
         }
 
         val coroutineScope = rememberCoroutineScope()
@@ -57,16 +64,50 @@ fun MainView() {
                     Text("서울역 지하철 도착 정보")
                 }
             }
-            items(20) {
-                Chip(
-                    onClick = {
-                       coroutineScope.launch {
-                           listState.animateScrollToItem(it + 1, scrollOffset)
-                       }
-                    },
-                    label = { Text("Item No.$it") },
-                    colors = ChipDefaults.secondaryChipColors(),
-                )
+            items(response.value?.realtimeArrivalList?.size ?: 0) {
+                val info = response.value?.realtimeArrivalList?.get(it)
+                val index = it
+
+                info?.let {
+                    TitleCard(
+                        onClick = {
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(index + 1, scrollOffset)
+                            }
+                        },
+                        title = {
+                            Text(
+                                it.trainLineNm,
+                                softWrap = true,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        },
+                        contentColor = MaterialTheme.colors.onSurface,
+                        titleColor = MaterialTheme.colors.onSurface,
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                mapSubwayIdToLineNumber(info.subwayId),
+                                softWrap = true,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = TextStyle(
+                                    fontSize = 10.sp,
+                                    color = Color.Gray,
+                                ),
+                            )
+                            Text(
+                                info.arvlMsg2,
+                                softWrap = true,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
