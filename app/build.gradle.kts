@@ -35,7 +35,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    buildToolsVersion = "32.1.0-rc1"
+    buildToolsVersion = "30.0.3"
 }
 
 dependencies {
