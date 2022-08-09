@@ -1,124 +1,44 @@
 package codes.beleap.wearos_pt_info
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.*
-import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
-import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
-import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
+import androidx.wear.compose.navigation.SwipeDismissableNavHost
+import androidx.wear.compose.navigation.composable
+import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import codes.beleap.wearos_pt_info.settings.CountSettingView
+import codes.beleap.wearos_pt_info.settings.Settings
+import codes.beleap.wearos_pt_info.settings.SettingsRepository
+import codes.beleap.wearos_pt_info.settings.SettingsView
 
-@Preview
 @Composable
-fun MainView() {
-    val listState = rememberScalingLazyListState()
-    val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
+fun MainView(settingStore: DataStore<Settings>) {
+    val navController = rememberSwipeDismissableNavController()
+    val settingsRepository = SettingsRepository(settingStore)
 
-    Scaffold(
-        positionIndicator = {
-            PositionIndicator(
-                scalingLazyListState = listState,
-                modifier = Modifier,
-            )
-        },
-        vignette = { Vignette(vignettePosition = vignettePosition.value) },
-        timeText = {
-            TimeText()
-        }
+    SwipeDismissableNavHost(
+        navController = navController,
+        startDestination = "settings",
     ) {
-        val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
-
-        LaunchedEffect(key1 = null) {
-            val apiService = SubwayArrivalInfoApi.retrofitService
-            response.value = apiService.getSubwayArrivalInfo()
-            Log.d("DataFetcher", response.value.toString())
+        composable("subway_info") {
+            SubwayArrivalInfoView(
+                navController = navController,
+            )
         }
-
-        val coroutineScope = rememberCoroutineScope()
-        val itemSpacing = 6.dp
-        val scrollOffset = with(LocalDensity.current) {
-            -(itemSpacing / 2).roundToPx()
+        composable("settings") {
+            SettingsView(
+                navController = navController,
+                settingsRepository = settingsRepository,
+            )
         }
-
-        ScalingLazyColumn(
-            contentPadding = PaddingValues(top = 40.dp),
-            state = listState,
-            modifier = Modifier.fillMaxSize(),
-            autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
-            verticalArrangement = Arrangement.spacedBy(itemSpacing),
-        ) {
-            item {
-                ListHeader {
-                    Text("서울역 지하철 도착 정보")
-                }
-            }
-
-            response.value?.realtimeArrivalList?.let {
-                items(it.size) { idx ->
-                    val info = it[idx]
-
-                    TitleCard(
-                        onClick = {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(idx + 1, scrollOffset)
-                            }
-                        },
-                        title = {
-                            Text(
-                                info.trainLineNm,
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        contentColor = MaterialTheme.colors.onSurface,
-                        titleColor = MaterialTheme.colors.onSurface,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                mapSubwayIdToLineNumber(info.subwayId),
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = TextStyle(
-                                    fontSize = 10.sp,
-                                    color = Color.Gray,
-                                ),
-                            )
-                            Text(
-                                info.arvlMsg2,
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                    }
-                }
-            }
-
-            item {
-                CompactButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        Icons.Rounded.Settings,
-                        contentDescription = "Settings",
-                    )
-                }
-            }
+        composable("settings/count") {
+            CountSettingView(
+                settingsRepository = settingsRepository,
+            )
+        }
+        composable("settings/target") {
+            CountSettingView(
+                settingsRepository = settingsRepository,
+            )
         }
     }
 }

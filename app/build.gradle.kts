@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
+    id("com.google.protobuf") version "0.8.19"
+    kotlin("plugin.serialization") version "1.5.31"
 }
 
 android {
@@ -59,4 +61,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.9.3")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    // Settings
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 }
