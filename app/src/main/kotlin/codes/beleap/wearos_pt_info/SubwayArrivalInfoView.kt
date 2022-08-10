@@ -68,7 +68,7 @@ fun SubwayArrivalInfoView(
                 response.value = info
             } catch (e: JsonDataException) {
                 if (settings.value.isDebugMode) {
-                    val toast = Toast.makeText(context, e.message, Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                     toast.show()
                 }
                 Log.w("DataFetcher", "Malformed response", e)
