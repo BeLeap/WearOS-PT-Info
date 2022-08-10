@@ -50,7 +50,7 @@ fun SubwayArrivalInfoView(
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
         val context = LocalContext.current
 
-        LaunchedEffect(key1 = null) {
+        LaunchedEffect(key1 = Unit) {
             settings.value = settingsRepository.getSettings()
 
             val apiService = SubwayArrivalInfoApi.retrofitService

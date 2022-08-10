@@ -21,7 +21,7 @@ fun CountSettingView(
     val scope = rememberCoroutineScope()
 
     val count: MutableState<Int?> = remember { mutableStateOf(null) }
-    LaunchedEffect(key1 = null) {
+    LaunchedEffect(key1 = Unit) {
         count.value = settingsRepository.getSettings().count
     }
 

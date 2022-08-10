@@ -23,7 +23,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
     val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
 
     val settings: MutableState<Settings?> = remember { mutableStateOf(null) }
-    LaunchedEffect(key1 = null) {
+    LaunchedEffect(key1 = Unit) {
         settings.value = settingsRepository.getSettings()
     }
 

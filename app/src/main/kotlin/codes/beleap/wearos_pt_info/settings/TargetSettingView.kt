@@ -25,7 +25,7 @@ fun TargetSettingView(
     val scope = rememberCoroutineScope()
 
     val target: MutableState<String?> = remember { mutableStateOf(null) }
-    LaunchedEffect(key1 = null) {
+    LaunchedEffect(key1 = Unit) {
         target.value = settingsRepository.getSettings().target
         Log.d("TEST", target.value ?: "")
         Log.d("TEST", target.value?.length.toString())
