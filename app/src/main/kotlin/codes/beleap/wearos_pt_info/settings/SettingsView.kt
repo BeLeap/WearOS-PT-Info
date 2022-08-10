@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.BuildConfig
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsView(navController: NavController, settingsRepository: SettingsRepository) {
@@ -70,6 +71,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
             }
 
             item {
+                val scope = rememberCoroutineScope()
                 val context = LocalContext.current
 
                 Chip(
@@ -78,14 +80,20 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                         versionTouchCount.value += 1
                         if (versionTouchCount.value >= 5) {
                             versionTouchCount.value = 0
-                            if (debugInfo.value == null) {
+                            if (settings.value?.isDebugMode == false) {
                                 val toast = Toast.makeText(context, "Show Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
                                 debugInfo.value = BuildConfig.SUBWAY_INFO_API_KEY
+                                scope.launch {
+                                    settingsRepository.updateIsDebugMode(true)
+                                }
                             } else {
                                 val toast = Toast.makeText(context, "Remove Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
                                 debugInfo.value = null
+                                scope.launch {
+                                    settingsRepository.updateIsDebugMode(false)
+                                }
                             }
                         }
                     },

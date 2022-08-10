@@ -1,6 +1,7 @@
 package codes.beleap.wearos_pt_info
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
@@ -8,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,19 +48,29 @@ fun SubwayArrivalInfoView(
         val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
         val settings: MutableState<Settings> = remember { mutableStateOf(Settings.default()) }
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
+        val context = LocalContext.current
 
         LaunchedEffect(key1 = null) {
             settings.value = settingsRepository.getSettings()
 
             val apiService = SubwayArrivalInfoApi.retrofitService
             try {
-                response.value = apiService.getSubwayArrivalInfo(
+                val info = apiService.getSubwayArrivalInfo(
                     apiKey = apiKey,
                     count = settings.value.count,
                     target = settings.value.target,
                 )
-                Log.d("DataFetcher", response.value.toString())
+                if (settings.value.isDebugMode) {
+                    val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
+                    toast.show()
+                }
+                Log.d("DataFetcher", info.toString())
+                response.value = info
             } catch (e: JsonDataException) {
+                if (settings.value.isDebugMode) {
+                    val toast = Toast.makeText(context, e.message, Toast.LENGTH_SHORT)
+                    toast.show()
+                }
                 Log.w("DataFetcher", "Malformed response", e)
             }
         }

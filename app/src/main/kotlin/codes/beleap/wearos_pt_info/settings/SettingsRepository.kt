@@ -14,4 +14,7 @@ class SettingsRepository(
     suspend fun updateTarget(target: String) = settingsStore.updateData {
         it.copy(target = target)
     }
+    suspend fun updateIsDebugMode(target: Boolean) = settingsStore.updateData {
+        it.copy(isDebugMode = target)
+    }
 }
