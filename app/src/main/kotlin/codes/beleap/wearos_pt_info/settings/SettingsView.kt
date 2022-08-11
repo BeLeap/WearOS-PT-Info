@@ -29,7 +29,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
     }
 
     val versionTouchCount = remember { mutableStateOf(0) }
-    val debugInfo: MutableState<String?> = remember { mutableStateOf(null) }
+    val debugInfo = BuildConfig.SUBWAY_INFO_API_KEY
 
     Scaffold(
         vignette = { Vignette(vignettePosition = vignettePosition.value) },
@@ -90,14 +90,18 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                             if (settings.value?.isDebugMode == false) {
                                 val toast = Toast.makeText(context, "Show Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
-                                debugInfo.value = BuildConfig.SUBWAY_INFO_API_KEY
+                                settings.value = settings.value?.copy(
+                                    isDebugMode = true,
+                                )
                                 scope.launch {
                                     settingsRepository.updateIsDebugMode(true)
                                 }
                             } else {
                                 val toast = Toast.makeText(context, "Remove Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
-                                debugInfo.value = null
+                                settings.value = settings.value?.copy(
+                                    isDebugMode = false
+                                )
                                 scope.launch {
                                     settingsRepository.updateIsDebugMode(false)
                                 }
@@ -116,10 +120,10 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                 )
             }
 
-            debugInfo.value?.let {
+            if (settings.value?.isDebugMode == true) {
                 item {
                     Text(
-                        it,
+                        debugInfo,
                         style = TextStyle(
                             fontSize = 9.sp,
                         ),
