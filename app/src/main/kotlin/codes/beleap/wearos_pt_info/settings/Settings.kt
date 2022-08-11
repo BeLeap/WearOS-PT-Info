@@ -12,7 +12,7 @@ import java.io.OutputStream
 data class Settings(
     val count: Int,
     val target: String,
-    val isDebugMode: Boolean,
+    val isDebugMode: Boolean?,
 ) {
     companion object {
         fun default() = Settings(

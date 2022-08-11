@@ -51,31 +51,38 @@ fun SubwayArrivalInfoView(
         val context = LocalContext.current
 
         LaunchedEffect(key1 = Unit) {
-            settings.value = settingsRepository.getSettings()
-            if (settings.value.isDebugMode) {
-                val toast = Toast.makeText(context, settings.value.toString(), Toast.LENGTH_SHORT)
-                toast.show()
-            }
-
-            val apiService = SubwayArrivalInfoApi.retrofitService
             try {
-                val info = apiService.getSubwayArrivalInfo(
-                    apiKey = apiKey,
-                    count = settings.value.count,
-                    target = settings.value.target,
-                )
-                if (settings.value.isDebugMode) {
-                    val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
+                val settingsValue = settingsRepository.getSettings()
+                if (settingsValue.isDebugMode == true) {
+                    val toast =
+                        Toast.makeText(context, settingsValue.toString(), Toast.LENGTH_SHORT)
                     toast.show()
                 }
-                Log.d("DataFetcher", info.toString())
-                response.value = info
-            } catch (e: JsonDataException) {
-                if (settings.value.isDebugMode) {
-                    val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
-                    toast.show()
+                settings.value = settingsValue
+
+                val apiService = SubwayArrivalInfoApi.retrofitService
+                try {
+                    val info = apiService.getSubwayArrivalInfo(
+                        apiKey = apiKey,
+                        count = settings.value.count,
+                        target = settings.value.target,
+                    )
+                    if (settingsValue.isDebugMode == true) {
+                        val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                    Log.d("DataFetcher", info.toString())
+                    response.value = info
+                } catch (e: JsonDataException) {
+                    if (settingsValue.isDebugMode == true) {
+                        val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
+                    Log.w("DataFetcher", "Malformed response", e)
                 }
-                Log.w("DataFetcher", "Malformed response", e)
+            } catch (e: Exception) {
+                val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
+                toast.show()
             }
         }
 
