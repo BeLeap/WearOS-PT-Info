@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,7 +113,10 @@ fun SubwayArrivalInfoView(
         ) {
             item {
                 ListHeader {
-                    Text("${target.value}역 지하철 도착 정보")
+                    Text(
+                        "${target.value}역 지하철 도착 정보",
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
 
