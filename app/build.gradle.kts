@@ -20,8 +20,8 @@ android {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
         targetSdk = 32
-        versionCode = 19
-        versionName = "0.0.19"
+        versionCode = 20
+        versionName = "0.0.20"
 
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
@@ -68,9 +68,8 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:1.0.0")
     implementation("androidx.wear.compose:compose-navigation:1.0.0")
 
-    // Volly
+    // Volley
     implementation("com.android.volley:volley:1.2.1")
-    implementation("com.google.code.gson:gson:2.9.0")
 
     // Settings
     implementation("androidx.datastore:datastore:1.0.0")

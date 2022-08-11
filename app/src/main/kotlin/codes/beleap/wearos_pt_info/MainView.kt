@@ -17,8 +17,8 @@ fun MainView(settingStore: DataStore<Settings>) {
         startDestination = "subway_info",
     ) {
         composable("subway_info") {
-            SubwayArrivalInfoView(
-                navController = navController,
+            SubwayArrivalInfoNavView(
+                mainNavController = navController,
                 settingsRepository = settingsRepository,
             )
         }
@@ -33,8 +33,8 @@ fun MainView(settingStore: DataStore<Settings>) {
                 settingsRepository = settingsRepository,
             )
         }
-        composable("settings/target") {
-            TargetSettingView(
+        composable("settings/targets") {
+            TargetsSettingView(
                 settingsRepository = settingsRepository,
             )
         }

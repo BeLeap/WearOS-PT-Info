@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -63,9 +64,15 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
             item {
                 Chip(
                     modifier = Modifier.fillMaxSize(),
-                    onClick = { navController.navigate("settings/target") },
+                    onClick = { navController.navigate("settings/targets") },
                     label = { Text("대상 역") },
-                    secondaryLabel = { Text("${settings.value?.target}") },
+                    secondaryLabel = {
+                        Text(
+                            "${settings.value?.targets}",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
                     colors = ChipDefaults.secondaryChipColors(),
                 )
             }

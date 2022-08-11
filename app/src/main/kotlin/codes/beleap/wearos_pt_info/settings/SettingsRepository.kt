@@ -11,10 +11,13 @@ class SettingsRepository(
     suspend fun updateCount(count: Int) = settingsStore.updateData {
         it.copy(count = count)
     }
-    suspend fun updateTarget(target: String) = settingsStore.updateData {
-        it.copy(target = target)
+    suspend fun updateTargets(targets: List<String>) = settingsStore.updateData { data ->
+        data.copy(
+            target = null,
+            targets = targets.filter { it.isNotBlank() },
+        )
     }
-    suspend fun updateIsDebugMode(target: Boolean) = settingsStore.updateData {
-        it.copy(isDebugMode = target)
+    suspend fun updateIsDebugMode(isDebugMode: Boolean) = settingsStore.updateData {
+        it.copy(isDebugMode = isDebugMode)
     }
 }

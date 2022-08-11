@@ -3,8 +3,6 @@ package codes.beleap.wearos_pt_info
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,7 +13,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.dto.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.dto.mapSubwayIdToLineNumber
@@ -23,12 +20,12 @@ import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
+import org.json.JSONException
 
 @Composable
 fun SubwayArrivalInfoView(
-    navController: NavController,
+    index: Int,
     settingsRepository: SettingsRepository,
 ) {
     val listState = rememberScalingLazyListState()
@@ -47,51 +44,55 @@ fun SubwayArrivalInfoView(
         }
     ) {
         val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
-        val settings: MutableState<Settings> = remember { mutableStateOf(Settings.default()) }
+        val settings: MutableState<Settings> = remember { mutableStateOf(Settings()) }
+        val target: MutableState<String> = remember { mutableStateOf("") }
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
         val context = LocalContext.current
-        val requestQueue = Volley.newRequestQueue(context)
+        val showDebugToast = { message: String ->
+            if (settings.value.isDebugMode == true) {
+                val toast =
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT)
+                toast.show()
+            }
+        }
 
 
         LaunchedEffect(key1 = Unit) {
             try {
                 val settingsValue = settingsRepository.getSettings()
-
-                val showDebugToast = { message: String ->
-                    if (settingsValue.isDebugMode == true) {
-                        val toast =
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT)
-                        toast.show()
-                    }
-                }
-                showDebugToast(settingsValue.toString())
-
                 settings.value = settingsValue
-
-                val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settingsValue.count}/${settingsValue.target}"
-
-                val request = JsonObjectRequest(url,
-                    { resp ->
-                        try {
-                            val info = SubwayArrivalInfoResponse.fromJsonObject(resp)
-                            showDebugToast(info.errorMessage.message)
-                            Log.d("DataFetcher", info.toString())
-
-                            response.value = info
-                        } catch (error: JsonSyntaxException) {
-                            showDebugToast("Malformed Response: ${error.cause}: ${error.message}")
-                            showDebugToast(resp.toString())
-                        }
-                    },
-                    { error ->
-                        showDebugToast("${error.cause}: ${error.message}")
-                    }
-                )
-                requestQueue.add(request)
+                target.value = settingsValue.targets[index]
+                showDebugToast(settingsValue.toString())
             } catch (e: Exception) {
                 val toast = Toast.makeText(context, "Failed to read settings: ${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                 toast.show()
             }
+        }
+
+        val requestQueue = Volley.newRequestQueue(LocalContext.current)
+
+        LaunchedEffect(key1 = Unit) {
+            val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settings.value.count}/${target.value}"
+
+            val request = JsonObjectRequest(url,
+                { resp ->
+                    try {
+                        val info = SubwayArrivalInfoResponse.fromJsonObject(resp)
+                        showDebugToast(info.errorMessage.message)
+                        Log.d("DataFetcher", info.toString())
+
+                        response.value = info
+                    } catch (error: JSONException) {
+                        showDebugToast("Malformed Response: ${error.cause}: ${error.message}")
+                        showDebugToast(resp.toString())
+                    }
+                },
+                { error ->
+                    showDebugToast("${error.cause}: ${error.message}")
+                }
+            )
+            Log.d("DataFetcher", "RequestURL: $url")
+            requestQueue.add(request)
         }
 
         val coroutineScope = rememberCoroutineScope()
@@ -111,7 +112,7 @@ fun SubwayArrivalInfoView(
         ) {
             item {
                 ListHeader {
-                    Text("${settings.value.target}역 지하철 도착 정보")
+                    Text("${target.value}역 지하철 도착 정보")
                 }
             }
 
@@ -160,17 +161,6 @@ fun SubwayArrivalInfoView(
                 }
             } ?: item {
                 CircularProgressIndicator()
-            }
-
-            item {
-                CompactButton(onClick = {
-                    navController.navigate("settings")
-                }) {
-                    Icon(
-                        Icons.Rounded.Settings,
-                        contentDescription = "Settings",
-                    )
-                }
             }
         }
     }

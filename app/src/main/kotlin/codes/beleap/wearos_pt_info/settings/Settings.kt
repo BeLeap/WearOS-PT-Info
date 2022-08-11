@@ -10,21 +10,15 @@ import java.io.OutputStream
 
 @Serializable
 data class Settings(
-    val count: Int,
-    val target: String,
-    val isDebugMode: Boolean?,
-) {
-    companion object {
-        fun default() = Settings(
-            count = 5,
-            target = "서울",
-            isDebugMode = false,
-        )
-    }
-}
+    val count: Int = 5,
+    @Deprecated(message = "Use targets")
+    val target: String? = null,
+    val targets: List<String> = listOf("서울"),
+    val isDebugMode: Boolean? = false,
+)
 
 object SettingsSerializer: Serializer<Settings> {
-    override val defaultValue: Settings = Settings.default()
+    override val defaultValue: Settings = Settings()
 
     override suspend fun readFrom(input: InputStream): Settings {
         try {
