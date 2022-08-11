@@ -55,32 +55,37 @@ fun SubwayArrivalInfoView(
 
 
         LaunchedEffect(key1 = Unit) {
+
             try {
                 val settingsValue = settingsRepository.getSettings()
-                if (settingsValue.isDebugMode == true) {
-                    val toast =
-                        Toast.makeText(context, settingsValue.toString(), Toast.LENGTH_SHORT)
-                    toast.show()
+
+                val showDebugToast = { message: String ->
+                    if (settingsValue.isDebugMode == true) {
+                        val toast =
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT)
+                        toast.show()
+                    }
                 }
+                showDebugToast(settingsValue.toString())
+
                 settings.value = settingsValue
 
                 val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settingsValue.count}/${settingsValue.target}"
 
                 val request = StringRequest(Request.Method.GET, url,
                     { resp ->
-                        val info = Gson().fromJson(resp, SubwayArrivalInfoResponse::class.java)
-                        if (settingsValue.isDebugMode == true) {
-                            val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
-                            toast.show()
+                        try {
+                            val info = Gson().fromJson(resp, SubwayArrivalInfoResponse::class.java)
+                            showDebugToast(info.errorMessage.message)
+                            Log.d("DataFetcher", info.toString())
+
+                            response.value = info
+                        } catch (error: Exception) {
+                            showDebugToast("${error.cause}: ${error.message}")
                         }
-                        Log.d("DataFetcher", info.toString())
-                        response.value = info
                     },
                     { error ->
-                        if (settingsValue.isDebugMode == true) {
-                            val toast =Toast.makeText(context, "${error.cause}: ${error.message}", Toast.LENGTH_SHORT)
-                            toast.show()
-                        }
+                        showDebugToast("${error.cause}: ${error.message}")
                     }
                 )
                 requestQueue.add(request)
