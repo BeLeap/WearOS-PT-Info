@@ -52,6 +52,10 @@ fun SubwayArrivalInfoView(
 
         LaunchedEffect(key1 = Unit) {
             settings.value = settingsRepository.getSettings()
+            if (settings.value.isDebugMode) {
+                val toast = Toast.makeText(context, settings.value.toString(), Toast.LENGTH_SHORT)
+                toast.show()
+            }
 
             val apiService = SubwayArrivalInfoApi.retrofitService
             try {
