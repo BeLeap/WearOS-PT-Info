@@ -17,16 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.*
-import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
-import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
+import codes.beleap.wearos_pt_info.dto.SubwayArrivalInfoResponse
+import codes.beleap.wearos_pt_info.dto.mapSubwayIdToLineNumber
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
-import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.JsonRequest
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
 

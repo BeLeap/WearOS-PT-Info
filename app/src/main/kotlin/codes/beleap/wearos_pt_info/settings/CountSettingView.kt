@@ -39,7 +39,7 @@ fun CountSettingView(
                         settingsRepository.updateCount(newValue)
                     }
                 },
-                valueProgression = 1..5,
+                valueProgression = 1..10,
                 increaseIcon = { Icon(StepperDefaults.Increase, "Increase") },
                 decreaseIcon = { Icon(StepperDefaults.Decrease, "Decrease") },
             ) {

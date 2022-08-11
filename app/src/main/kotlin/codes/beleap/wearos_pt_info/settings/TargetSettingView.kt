@@ -49,7 +49,7 @@ fun TargetSettingView(
                 modifier = Modifier
                     .border(BorderStroke(2.dp, Color.Gray), RoundedCornerShape(16.dp)),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Done,
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = {

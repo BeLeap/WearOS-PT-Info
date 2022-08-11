@@ -1,4 +1,4 @@
-package codes.beleap.wearos_pt_info.network
+package codes.beleap.wearos_pt_info.dto
 
 import org.json.JSONObject
 
