@@ -25,6 +25,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
 
 @Composable
@@ -80,8 +81,9 @@ fun SubwayArrivalInfoView(
                             Log.d("DataFetcher", info.toString())
 
                             response.value = info
-                        } catch (error: Exception) {
-                            showDebugToast("${error.cause}: ${error.message}")
+                        } catch (error: JsonSyntaxException) {
+                            showDebugToast("Malformed Response: ${error.cause}: ${error.message}")
+                            showDebugToast(resp)
                         }
                     },
                     { error ->
@@ -90,7 +92,7 @@ fun SubwayArrivalInfoView(
                 )
                 requestQueue.add(request)
             } catch (e: Exception) {
-                val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(context, "Request Error: ${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                 toast.show()
             }
         }
