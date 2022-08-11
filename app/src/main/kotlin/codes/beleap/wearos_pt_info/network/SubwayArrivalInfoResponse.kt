@@ -1,20 +1,54 @@
 package codes.beleap.wearos_pt_info.network
 
+import org.json.JSONObject
+
 data class SubwayArrivalInfoResponse(
     val errorMessage: ErrorMessage,
     val realtimeArrivalList: List<SubwayArrivalInfo>,
-)
+) {
+    companion object {
+        fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfoResponse {
+            val rawList = jsonObject.optJSONArray("realtimeArrivalList")
+            var list: List<SubwayArrivalInfo> = listOf()
+            if (rawList != null) {
+                for (idx in (0 until rawList.length())) {
+                    list = list + SubwayArrivalInfo.fromJsonObject(rawList.getJSONObject(idx))
+                }
+            }
+
+            return SubwayArrivalInfoResponse(
+                errorMessage = ErrorMessage.fromJsonObject(jsonObject.getJSONObject("errorMessage")),
+                realtimeArrivalList = list
+            )
+        }
+    }
+}
 
 data class ErrorMessage(
     val status: Int,
     val message: String,
-)
+) {
+    companion object {
+        fun fromJsonObject(jsonObject: JSONObject): ErrorMessage = ErrorMessage(
+            status = jsonObject.getInt("status"),
+            message = jsonObject.getString("message"),
+        )
+    }
+}
 
 data class SubwayArrivalInfo(
     val subwayId: String,
     val trainLineNm: String,
     val arvlMsg2: String,
-)
+) {
+    companion object {
+        fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfo = SubwayArrivalInfo(
+            subwayId = jsonObject.getString("subwayId"),
+            trainLineNm = jsonObject.getString("trainLineNm"),
+            arvlMsg2 = jsonObject.getString("arvlMsg2"),
+        )
+    }
+}
 
 fun mapSubwayIdToLineNumber(subwayId: String): String = when (subwayId) {
     "1001" -> "1호선"

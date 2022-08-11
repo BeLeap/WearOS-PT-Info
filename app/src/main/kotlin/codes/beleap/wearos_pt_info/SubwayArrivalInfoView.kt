@@ -22,6 +22,8 @@ import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.JsonRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
@@ -56,7 +58,6 @@ fun SubwayArrivalInfoView(
 
 
         LaunchedEffect(key1 = Unit) {
-
             try {
                 val settingsValue = settingsRepository.getSettings()
 
@@ -73,17 +74,17 @@ fun SubwayArrivalInfoView(
 
                 val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settingsValue.count}/${settingsValue.target}"
 
-                val request = StringRequest(Request.Method.GET, url,
+                val request = JsonObjectRequest(url,
                     { resp ->
                         try {
-                            val info = Gson().fromJson(resp, SubwayArrivalInfoResponse::class.java)
+                            val info = SubwayArrivalInfoResponse.fromJsonObject(resp)
                             showDebugToast(info.errorMessage.message)
                             Log.d("DataFetcher", info.toString())
 
                             response.value = info
                         } catch (error: JsonSyntaxException) {
                             showDebugToast("Malformed Response: ${error.cause}: ${error.message}")
-                            showDebugToast(resp)
+                            showDebugToast(resp.toString())
                         }
                     },
                     { error ->
@@ -92,7 +93,7 @@ fun SubwayArrivalInfoView(
                 )
                 requestQueue.add(request)
             } catch (e: Exception) {
-                val toast = Toast.makeText(context, "Request Error: ${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(context, "Failed to read settings: ${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                 toast.show()
             }
         }
