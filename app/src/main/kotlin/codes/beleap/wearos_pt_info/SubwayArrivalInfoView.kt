@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.*
-import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoApi
 import codes.beleap.wearos_pt_info.network.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.network.mapSubwayIdToLineNumber
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
-import com.squareup.moshi.JsonDataException
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,6 +51,8 @@ fun SubwayArrivalInfoView(
         val settings: MutableState<Settings> = remember { mutableStateOf(Settings.default()) }
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
         val context = LocalContext.current
+        val requestQueue = Volley.newRequestQueue(context)
+
 
         LaunchedEffect(key1 = Unit) {
             try {
@@ -60,26 +64,26 @@ fun SubwayArrivalInfoView(
                 }
                 settings.value = settingsValue
 
-                val apiService = SubwayArrivalInfoApi.retrofitService
-                try {
-                    val info = apiService.getSubwayArrivalInfo(
-                        apiKey = apiKey,
-                        count = settings.value.count,
-                        target = settings.value.target,
-                    )
-                    if (settingsValue.isDebugMode == true) {
-                        val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
-                        toast.show()
+                val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settingsValue.count}/${settingsValue.target}"
+
+                val request = StringRequest(Request.Method.GET, url,
+                    { resp ->
+                        val info = Gson().fromJson(resp, SubwayArrivalInfoResponse::class.java)
+                        if (settingsValue.isDebugMode == true) {
+                            val toast = Toast.makeText(context, info.errorMessage.message, Toast.LENGTH_SHORT)
+                            toast.show()
+                        }
+                        Log.d("DataFetcher", info.toString())
+                        response.value = info
+                    },
+                    { error ->
+                        if (settingsValue.isDebugMode == true) {
+                            val toast =Toast.makeText(context, "${error.cause}: ${error.message}", Toast.LENGTH_SHORT)
+                            toast.show()
+                        }
                     }
-                    Log.d("DataFetcher", info.toString())
-                    response.value = info
-                } catch (e: JsonDataException) {
-                    if (settingsValue.isDebugMode == true) {
-                        val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
-                        toast.show()
-                    }
-                    Log.w("DataFetcher", "Malformed response", e)
-                }
+                )
+                requestQueue.add(request)
             } catch (e: Exception) {
                 val toast = Toast.makeText(context, "${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                 toast.show()
