@@ -2,11 +2,17 @@ package codes.beleap.wearos_pt_info
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -25,6 +31,7 @@ import org.json.JSONException
 import java.time.Duration
 import java.time.LocalDateTime
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SubwayArrivalInfoView(
     target: String,
@@ -103,10 +110,23 @@ fun SubwayArrivalInfoView(
             -(itemSpacing / 2).roundToPx()
         }
 
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
+
         ScalingLazyColumn(
             contentPadding = PaddingValues(top = 40.dp),
             state = listState,
             modifier = Modifier
+                .onRotaryScrollEvent {
+                    coroutineScope.launch {
+                        listState.scrollBy(it.verticalScrollPixels)
+                    }
+                    true
+                }
+                .focusRequester(focusRequester)
+                .focusable()
                 .fillMaxSize()
                 .padding(horizontal = 10.dp),
             autoCentering = AutoCenteringParams(itemOffset = scrollOffset),

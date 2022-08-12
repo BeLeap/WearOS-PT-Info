@@ -1,11 +1,16 @@
 package codes.beleap.wearos_pt_info
 
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,7 +22,9 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SubwayArrivalInfoNavView(
     mainNavController: NavController,
@@ -47,16 +54,29 @@ fun SubwayArrivalInfoNavView(
                     TimeText()
                 }
             ) {
-
                 val itemSpacing = 1.dp
                 val scrollOffset = with(LocalDensity.current) {
                     -(itemSpacing / 2).roundToPx()
+                }
+
+                val focusRequester = remember { FocusRequester() }
+                val scope = rememberCoroutineScope()
+                LaunchedEffect(key1 = Unit) {
+                    focusRequester.requestFocus()
                 }
 
                 ScalingLazyColumn(
                     contentPadding = PaddingValues(top = 25.dp),
                     state = listState,
                     modifier = Modifier
+                        .onRotaryScrollEvent {
+                            scope.launch {
+                                listState.scrollBy(it.verticalScrollPixels)
+                            }
+                            true
+                        }
+                        .focusRequester(focusRequester)
+                        .focusable()
                         .fillMaxSize()
                         .padding(horizontal = 10.dp),
                     autoCentering = AutoCenteringParams(itemOffset = scrollOffset),

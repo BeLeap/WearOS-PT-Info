@@ -2,6 +2,9 @@ package codes.beleap.wearos_pt_info.settings
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -13,9 +16,13 @@ import androidx.compose.material.icons.rounded.PlusOne
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -23,8 +30,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TargetsSettingView(
     settingsRepository: SettingsRepository,
@@ -52,6 +62,11 @@ fun TargetsSettingView(
         }
 
         val focusManager = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
+        val focusScope = rememberCoroutineScope()
 
         val itemSpacing = 5.dp
         val scrollOffset = with(LocalDensity.current) {
@@ -62,6 +77,14 @@ fun TargetsSettingView(
             contentPadding = PaddingValues(top = 25.dp),
             state = listState,
             modifier = Modifier
+                .onRotaryScrollEvent {
+                    focusScope.launch {
+                        listState.animateScrollBy(it.verticalScrollPixels)
+                    }
+                    true
+                }
+                .focusRequester(focusRequester)
+                .focusable()
                 .fillMaxSize()
                 .padding(horizontal = 10.dp),
             autoCentering = AutoCenteringParams(itemOffset = scrollOffset),

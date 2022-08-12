@@ -1,11 +1,18 @@
 package codes.beleap.wearos_pt_info.settings
 
 import android.widget.Toast
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -15,8 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.BuildConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsView(navController: NavController, settingsRepository: SettingsRepository) {
     val listState = rememberScalingLazyListState()
@@ -37,11 +47,25 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
         }
     ) {
         val itemSpacing = 6.dp
+        val scope = rememberCoroutineScope()
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(key1 = Unit) {
+            focusRequester.requestFocus()
+        }
 
         ScalingLazyColumn(
             contentPadding = PaddingValues(top = 40.dp),
             state = listState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .onRotaryScrollEvent {
+                    scope.launch {
+                        listState.animateScrollBy(it.verticalScrollPixels)
+                    }
+                    true
+                }
+                .focusRequester(focusRequester)
+                .focusable()
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(itemSpacing),
         ) {
             item {
