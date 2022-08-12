@@ -189,23 +189,15 @@ fun SubwayArrivalInfoView(
                                         color = Color.Gray,
                                     ),
                                 )
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Top,
-                                    modifier = Modifier
-                                        .fillMaxSize(),
-                                ) {
-                                    Text(info.arvlMsg2)
-                                    Spacer(modifier = Modifier.width(15.dp))
-                                    if (arriveIn > 0) {
-                                        Text(
-                                            "${arriveIn}초 후 도착",
-                                            style = TextStyle(
-                                                fontSize = 13.sp,
-                                                color = Color.LightGray,
-                                            ),
-                                        )
-                                    }
+                                Text(info.arvlMsg2)
+                                if (arriveIn > 0) {
+                                    Text(
+                                        "${arriveIn}초 후 도착",
+                                        style = TextStyle(
+                                            fontSize = 13.sp,
+                                            color = Color.LightGray,
+                                        ),
+                                    )
                                 }
                             }
                         }
