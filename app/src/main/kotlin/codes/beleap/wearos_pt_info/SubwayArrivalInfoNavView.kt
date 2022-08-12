@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,8 +32,8 @@ fun SubwayArrivalInfoNavView(
 
     SwipeDismissableNavHost(navController = infoNavController, startDestination = "info_list") {
         composable("info_list") {
-            val listState = rememberScalingLazyListState()
             val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
+            val listState = rememberScalingLazyListState()
 
             Scaffold(
                 positionIndicator = {

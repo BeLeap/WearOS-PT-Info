@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -18,16 +17,12 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.*
 import codes.beleap.wearos_pt_info.dto.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.dto.mapSubwayIdToLineNumber
-import codes.beleap.wearos_pt_info.settings.Settings
-import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Composable
@@ -47,9 +42,7 @@ fun SubwayArrivalInfoView(
             )
         },
         vignette = { Vignette(vignettePosition = vignettePosition) },
-        timeText = {
-            TimeText()
-        }
+        timeText = { TimeText() },
     ) {
         var response: SubwayArrivalInfoResponse? by remember { mutableStateOf(null) }
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
@@ -66,7 +59,8 @@ fun SubwayArrivalInfoView(
 
         val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${count}/${target}"
 
-        val request = JsonObjectRequest(url,
+        val request = JsonObjectRequest(
+            url,
             { resp ->
                 try {
                     val info = SubwayArrivalInfoResponse.fromJsonObject(resp)
