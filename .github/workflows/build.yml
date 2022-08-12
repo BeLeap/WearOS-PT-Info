@@ -1,0 +1,31 @@
+name: "Build App Bundle"
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[SETUP] Checkout"
+        uses: actions/checkout@v3
+      - name: "[SETUP] Java"
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11"
+      - name: "[BUILD] Build app bundle"
+        run: |
+          ./gradlew bundleRelease
+      - name: "[SETUP] Extract signing key"
+        run: |
+          echo "${{ secrets.SIGNING_KEY }}" > signingKey.jks.base64
+          base64 -d signingKey.jks.base64 > signingKey.jks
+      - name: "[BUILD] Sign bundle"
+        run: |
+          jarsigner -keystore signingKey.jsk -storepass "${{ secrets.SIGNING_KEY_PW }}" -signedjar ./app/release/app-release.aab ./signed-release.aab
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: signed-release.aab
