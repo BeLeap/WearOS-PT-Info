@@ -21,8 +21,12 @@ import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun SubwayArrivalInfoView(
@@ -124,42 +128,50 @@ fun SubwayArrivalInfoView(
                 items(it.size) { idx ->
                     val info = it[idx]
 
-                    TitleCard(
-                        onClick = {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(idx + 1, scrollOffset)
-                            }
-                        },
-                        title = {
-                            Text(
-                                info.trainLineNm,
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        contentColor = MaterialTheme.colors.onSurface,
-                        titleColor = MaterialTheme.colors.onSurface,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.Start
+                    var arriveIn by remember { mutableStateOf(info.barvlDt - (Duration.between(LocalDateTime.now(), info.recptnDt).seconds)) }
+                    LaunchedEffect(key1 = arriveIn) {
+                        delay(1000L)
+                        arriveIn -= 1
+                    }
+
+                    if (arriveIn>= 0) {
+                        TitleCard(
+                            onClick = {
+                                coroutineScope.launch {
+                                    listState.animateScrollToItem(idx + 1, scrollOffset)
+                                }
+                            },
+                            title = {
+                                Text(
+                                    info.trainLineNm,
+                                    softWrap = true,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            },
+                            contentColor = MaterialTheme.colors.onSurface,
+                            titleColor = MaterialTheme.colors.onSurface,
                         ) {
-                            Text(
-                                mapSubwayIdToLineNumber(info.subwayId),
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = TextStyle(
-                                    fontSize = 10.sp,
-                                    color = Color.Gray,
-                                ),
-                            )
-                            Text(
-                                info.arvlMsg2,
-                                softWrap = true,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    mapSubwayIdToLineNumber(info.subwayId),
+                                    softWrap = true,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = TextStyle(
+                                        fontSize = 10.sp,
+                                        color = Color.Gray,
+                                    ),
+                                )
+                                Text(
+                                    "${arriveIn}초 후 도착",
+                                    softWrap = true,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
                         }
                     }
                 }

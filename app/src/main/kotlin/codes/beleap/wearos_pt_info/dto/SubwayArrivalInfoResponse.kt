@@ -1,6 +1,9 @@
 package codes.beleap.wearos_pt_info.dto
 
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class SubwayArrivalInfoResponse(
     val errorMessage: ErrorMessage,
@@ -40,12 +43,18 @@ data class SubwayArrivalInfo(
     val subwayId: String,
     val trainLineNm: String,
     val arvlMsg2: String,
+    val barvlDt: Int,
+    val recptnDt: LocalDateTime,
 ) {
     companion object {
+        private val localDatePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
         fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfo = SubwayArrivalInfo(
             subwayId = jsonObject.getString("subwayId"),
             trainLineNm = jsonObject.getString("trainLineNm"),
             arvlMsg2 = jsonObject.getString("arvlMsg2"),
+            barvlDt = jsonObject.getInt("barvlDt"),
+            recptnDt = LocalDateTime.parse(jsonObject.getString("recptnDt").split('.').first(), localDatePattern),
         )
     }
 }
