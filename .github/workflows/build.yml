@@ -15,9 +15,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: "11"
+      - name: "[SETUP] Gradle cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: "[SETUP] ApiKey file"
         run: |
-          echo "${{ secrets.API_KEY_PROPERTIES }}" > apiKey.properties
+          echo '${{ secrets.API_KEY_PROPERTIES }}' > apiKey.properties
       - name: "[BUILD] Build app bundle"
         run: |
           ./gradlew bundleRelease
@@ -27,8 +36,8 @@ jobs:
           base64 -d signingKey.jks.base64 > signingKey.jks
       - name: "[BUILD] Sign bundle"
         run: |
-          jarsigner -keystore signingKey.jsk -storepass "${{ secrets.SIGNING_KEY_PW }}" -signedjar ./app/release/app-release.aab ./signed-release.aab
-      - name: Release
+          jarsigner -keystore signingKey.jks -storepass "${{ secrets.SIGNING_KEY_PW }}" -signedjar ./signed-release.aab ./app/build/outputs/bundle/release/app-release.aab PersonalKey
+      - name: "[WRAPUP] Relase"
         uses: softprops/action-gh-release@v1
         with:
           files: signed-release.aab

@@ -101,7 +101,6 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
             }
 
             item {
-                val scope = rememberCoroutineScope()
                 val context = LocalContext.current
 
                 Chip(
