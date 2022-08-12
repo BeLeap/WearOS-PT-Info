@@ -37,7 +37,7 @@ jobs:
       - name: "[BUILD] Sign bundle"
         run: |
           jarsigner -keystore signingKey.jks -storepass "${{ secrets.SIGNING_KEY_PW }}" -signedjar ./signed-release.aab ./app/build/outputs/bundle/release/app-release.aab PersonalKey
-      - name: "[WRAPUP] Relase"
+      - name: "[WRAPUP] Release"
         uses: softprops/action-gh-release@v1
         with:
           files: signed-release.aab
