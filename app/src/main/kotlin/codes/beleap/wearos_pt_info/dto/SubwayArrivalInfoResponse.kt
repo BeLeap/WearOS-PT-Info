@@ -44,6 +44,7 @@ data class SubwayArrivalInfo(
     val trainLineNm: String,
     var barvlDt: Long,
     val recptnDt: LocalDateTime,
+    val arvlMsg2: String,
 ) {
     companion object {
         private val localDatePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -53,6 +54,7 @@ data class SubwayArrivalInfo(
             trainLineNm = jsonObject.getString("trainLineNm"),
             barvlDt = jsonObject.getLong("barvlDt"),
             recptnDt = LocalDateTime.parse(jsonObject.getString("recptnDt").split('.').first(), localDatePattern),
+            arvlMsg2 = jsonObject.getString("arvlMsg2"),
         )
     }
 }
