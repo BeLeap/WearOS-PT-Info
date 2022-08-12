@@ -20,9 +20,9 @@ fun CountSettingView(
 ) {
     val scope = rememberCoroutineScope()
 
-    val count: MutableState<Int?> = remember { mutableStateOf(null) }
+    var count: Int? by remember { mutableStateOf(null) }
     LaunchedEffect(key1 = Unit) {
-        count.value = settingsRepository.getSettings().count
+        count = settingsRepository.getSettings().count
     }
 
     Row(
@@ -30,11 +30,11 @@ fun CountSettingView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        count.value?.let {
+        count?.let {
             Stepper(
                 value = it,
                 onValueChange = { newValue ->
-                    count.value = newValue
+                    count = newValue
                     scope.launch {
                         settingsRepository.updateCount(newValue)
                     }

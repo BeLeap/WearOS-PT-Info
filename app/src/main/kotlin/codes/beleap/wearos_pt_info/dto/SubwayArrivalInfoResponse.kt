@@ -42,8 +42,7 @@ data class ErrorMessage(
 data class SubwayArrivalInfo(
     val subwayId: String,
     val trainLineNm: String,
-    val arvlMsg2: String,
-    val barvlDt: Int,
+    var barvlDt: Long,
     val recptnDt: LocalDateTime,
 ) {
     companion object {
@@ -52,8 +51,7 @@ data class SubwayArrivalInfo(
         fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfo = SubwayArrivalInfo(
             subwayId = jsonObject.getString("subwayId"),
             trainLineNm = jsonObject.getString("trainLineNm"),
-            arvlMsg2 = jsonObject.getString("arvlMsg2"),
-            barvlDt = jsonObject.getInt("barvlDt"),
+            barvlDt = jsonObject.getLong("barvlDt"),
             recptnDt = LocalDateTime.parse(jsonObject.getString("recptnDt").split('.').first(), localDatePattern),
         )
     }

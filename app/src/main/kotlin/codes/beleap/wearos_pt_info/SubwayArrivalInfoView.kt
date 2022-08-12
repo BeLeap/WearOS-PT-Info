@@ -30,11 +30,12 @@ import java.time.LocalDateTime
 
 @Composable
 fun SubwayArrivalInfoView(
-    index: Int,
-    settingsRepository: SettingsRepository,
+    target: String,
+    count: Int,
+    isDebugMode: Boolean,
 ) {
     val listState = rememberScalingLazyListState()
-    val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
+    val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
 
     Scaffold(
         positionIndicator = {
@@ -43,33 +44,18 @@ fun SubwayArrivalInfoView(
                 modifier = Modifier,
             )
         },
-        vignette = { Vignette(vignettePosition = vignettePosition.value) },
+        vignette = { Vignette(vignettePosition = vignettePosition) },
         timeText = {
             TimeText()
         }
     ) {
-        val response: MutableState<SubwayArrivalInfoResponse?> = remember { mutableStateOf(null) }
-        val settings: MutableState<Settings> = remember { mutableStateOf(Settings()) }
-        val target: MutableState<String> = remember { mutableStateOf("") }
+        var response: SubwayArrivalInfoResponse? by remember { mutableStateOf(null) }
         val apiKey = BuildConfig.SUBWAY_INFO_API_KEY
         val context = LocalContext.current
         val showDebugToast = { message: String ->
-            if (settings.value.isDebugMode == true) {
+            if (isDebugMode) {
                 val toast =
                     Toast.makeText(context, message, Toast.LENGTH_SHORT)
-                toast.show()
-            }
-        }
-
-
-        LaunchedEffect(key1 = Unit) {
-            try {
-                val settingsValue = settingsRepository.getSettings()
-                settings.value = settingsValue
-                target.value = settingsValue.targets[index]
-                showDebugToast(settingsValue.toString())
-            } catch (e: Exception) {
-                val toast = Toast.makeText(context, "Failed to read settings: ${e.cause}: ${e.message}", Toast.LENGTH_SHORT)
                 toast.show()
             }
         }
@@ -77,7 +63,7 @@ fun SubwayArrivalInfoView(
         val requestQueue = Volley.newRequestQueue(LocalContext.current)
 
         LaunchedEffect(key1 = Unit) {
-            val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${settings.value.count}/${target.value}"
+            val url = "http://swopenapi.seoul.go.kr/api/subway/${apiKey}/json/realtimeStationArrival/0/${count}/${target}"
 
             val request = JsonObjectRequest(url,
                 { resp ->
@@ -86,7 +72,7 @@ fun SubwayArrivalInfoView(
                         showDebugToast(info.errorMessage.message)
                         Log.d("DataFetcher", info.toString())
 
-                        response.value = info
+                        response= info
                     } catch (error: JSONException) {
                         showDebugToast("Malformed Response: ${error.cause}: ${error.message}")
                         showDebugToast(resp.toString())
@@ -118,64 +104,72 @@ fun SubwayArrivalInfoView(
             item {
                 ListHeader {
                     Text(
-                        "${target.value}역 지하철 도착 정보",
+                        "${target}역 지하철 도착 정보",
                         textAlign = TextAlign.Center,
                     )
                 }
             }
 
-            response.value?.realtimeArrivalList?.let {
-                items(it.size) { idx ->
-                    val info = it[idx]
+            response
+                ?.realtimeArrivalList
+                ?.map {
+                    it.copy(
+                        barvlDt = it.barvlDt - (Duration.between(LocalDateTime.now(), it.recptnDt)).seconds
+                    )
+                }
+                ?.sortedBy { it.barvlDt }
+                ?.let {
+                    items(it.size) { idx ->
+                        val info = it[idx]
 
-                    var arriveIn by remember { mutableStateOf(info.barvlDt - (Duration.between(LocalDateTime.now(), info.recptnDt).seconds)) }
-                    LaunchedEffect(key1 = arriveIn) {
-                        delay(1000L)
-                        arriveIn -= 1
-                    }
+                        var arriveIn by remember { mutableStateOf(info.barvlDt) }
+                        LaunchedEffect(key1 = arriveIn) {
+                            delay(1000L)
+                            arriveIn -= 1
+                        }
 
-                    if (arriveIn>= 0) {
-                        TitleCard(
-                            onClick = {
-                                coroutineScope.launch {
-                                    listState.animateScrollToItem(idx + 1, scrollOffset)
-                                }
-                            },
-                            title = {
-                                Text(
-                                    info.trainLineNm,
-                                    softWrap = true,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            },
-                            contentColor = MaterialTheme.colors.onSurface,
-                            titleColor = MaterialTheme.colors.onSurface,
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.Start
+                        if (arriveIn >= 0) {
+                            TitleCard(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        listState.animateScrollToItem(idx + 1, scrollOffset)
+                                    }
+                                },
+                                title = {
+                                    Text(
+                                        info.trainLineNm,
+                                        softWrap = true,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                },
+                                contentColor = MaterialTheme.colors.onSurface,
+                                titleColor = MaterialTheme.colors.onSurface,
                             ) {
-                                Text(
-                                    mapSubwayIdToLineNumber(info.subwayId),
-                                    softWrap = true,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = TextStyle(
-                                        fontSize = 10.sp,
-                                        color = Color.Gray,
-                                    ),
-                                )
-                                Text(
-                                    "${arriveIn}초 후 도착",
-                                    softWrap = true,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    Text(
+                                        mapSubwayIdToLineNumber(info.subwayId),
+                                        softWrap = true,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = TextStyle(
+                                            fontSize = 10.sp,
+                                            color = Color.Gray,
+                                        ),
+                                    )
+                                    Text(
+                                        "${arriveIn}초 후 도착",
+                                        softWrap = true,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            } ?: item {
+                } ?: item {
                 CircularProgressIndicator()
             }
         }

@@ -14,6 +14,7 @@ import androidx.wear.compose.material.*
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 
 @Composable
@@ -22,11 +23,16 @@ fun SubwayArrivalInfoNavView(
     settingsRepository: SettingsRepository,
 ) {
     val infoNavController = rememberSwipeDismissableNavController()
-    val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
+    var settings by remember { mutableStateOf(Settings()) }
+
+    LaunchedEffect(key1 = settingsRepository) {
+        settings = settingsRepository.getSettings()
+    }
 
     SwipeDismissableNavHost(navController = infoNavController, startDestination = "info_list") {
         composable("info_list") {
             val listState = rememberScalingLazyListState()
+            val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
 
             Scaffold(
                 positionIndicator = {
@@ -35,16 +41,11 @@ fun SubwayArrivalInfoNavView(
                         modifier = Modifier,
                     )
                 },
-                vignette = { Vignette(vignettePosition = vignettePosition.value) },
+                vignette = { Vignette(vignettePosition = vignettePosition) },
                 timeText = {
                     TimeText()
                 }
             ) {
-                val targets: MutableState<List<String>> = remember { mutableStateOf(listOf()) }
-
-                LaunchedEffect(key1 = Unit) {
-                    targets.value = settingsRepository.getSettings().targets
-                }
 
                 val itemSpacing = 1.dp
                 val scrollOffset = with(LocalDensity.current) {
@@ -60,7 +61,7 @@ fun SubwayArrivalInfoNavView(
                     autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
                     verticalArrangement = Arrangement.spacedBy(itemSpacing),
                 ) {
-                    items(targets.value.size) { idx ->
+                    items(settings.targets.size) { idx ->
                         CompactChip(
                             onClick = {
                                 infoNavController.navigate("info/$idx")
@@ -70,7 +71,7 @@ fun SubwayArrivalInfoNavView(
                                 .fillMaxSize(),
                             label = {
                                 Text(
-                                    targets.value[idx],
+                                    settings.targets[idx],
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier
                                         .fillMaxWidth(),
@@ -96,8 +97,9 @@ fun SubwayArrivalInfoNavView(
         }
         composable("info/{index}") {
             SubwayArrivalInfoView(
-                index = it.arguments?.getString("index")!!.toInt(),
-                settingsRepository = settingsRepository,
+                target = settings.targets[it.arguments?.getString("index")!!.toInt()],
+                count = settings.count,
+                isDebugMode = settings.isDebugMode ?: false,
             )
         }
     }

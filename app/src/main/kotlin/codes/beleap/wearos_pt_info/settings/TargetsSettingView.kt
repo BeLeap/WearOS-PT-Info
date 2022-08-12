@@ -30,7 +30,7 @@ fun TargetsSettingView(
     settingsRepository: SettingsRepository,
 ) {
     val listState = rememberScalingLazyListState()
-    val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
+    val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
 
     Scaffold(
         positionIndicator = {
@@ -39,16 +39,16 @@ fun TargetsSettingView(
                 modifier = Modifier,
             )
         },
-        vignette = { Vignette(vignettePosition = vignettePosition.value) },
+        vignette = { Vignette(vignettePosition = vignettePosition) },
         timeText = {
             TimeText()
         }
     ) {
         val scope = rememberCoroutineScope()
 
-        val targets: MutableState<List<String>> = remember { mutableStateOf(listOf()) }
+        var targets: List<String> by remember { mutableStateOf(listOf()) }
         LaunchedEffect(key1 = Unit) {
-            targets.value = settingsRepository.getSettings().targets.toMutableList()
+            targets = settingsRepository.getSettings().targets.toMutableList()
         }
 
         val focusManager = LocalFocusManager.current
@@ -67,15 +67,15 @@ fun TargetsSettingView(
             autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
             verticalArrangement = Arrangement.spacedBy(itemSpacing),
         ) {
-            items(targets.value.size) { idx ->
-                val value = targets.value[idx]
+            items(targets.size) { idx ->
+                val value = targets[idx]
 
                 BasicTextField(
                     value = value,
                     onValueChange = { newValue ->
-                        val mutableTargets = targets.value.toMutableList()
+                        val mutableTargets = targets.toMutableList()
                         mutableTargets[idx] = newValue
-                        targets.value = mutableTargets
+                        targets = mutableTargets
                     },
                     modifier = Modifier
                         .border(BorderStroke(2.dp, Color.Gray), RoundedCornerShape(16.dp))
@@ -86,7 +86,7 @@ fun TargetsSettingView(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             scope.launch {
-                                settingsRepository.updateTargets(targets.value)
+                                settingsRepository.updateTargets(targets)
                             }
                             focusManager.clearFocus()
                         }
@@ -110,12 +110,12 @@ fun TargetsSettingView(
                         )
                         CompactButton(
                             onClick = {
-                                val mutableTargets = targets.value.toMutableList()
+                                val mutableTargets = targets.toMutableList()
                                 mutableTargets.removeAt(idx)
 
-                                targets.value = mutableTargets
+                                targets = mutableTargets
                                 scope.launch {
-                                    settingsRepository.updateTargets(targets.value)
+                                    settingsRepository.updateTargets(targets)
                                 }
                             },
                             colors = ButtonDefaults.secondaryButtonColors()
@@ -129,9 +129,9 @@ fun TargetsSettingView(
             item {
                 CompactButton(
                     onClick = {
-                        targets.value = targets.value + listOf("")
+                        targets = targets + listOf("")
                         scope.launch {
-                            settingsRepository.updateTargets(targets.value)
+                            settingsRepository.updateTargets(targets)
                         }
                     },
                     modifier = Modifier.fillMaxSize(),

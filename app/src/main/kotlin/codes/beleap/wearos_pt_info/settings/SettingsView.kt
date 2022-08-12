@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,18 +20,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsView(navController: NavController, settingsRepository: SettingsRepository) {
     val listState = rememberScalingLazyListState()
-    val vignettePosition = remember { mutableStateOf(VignettePosition.TopAndBottom) }
+    val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
 
-    val settings: MutableState<Settings?> = remember { mutableStateOf(null) }
+    var settings: Settings? by remember { mutableStateOf(null) }
     LaunchedEffect(key1 = Unit) {
-        settings.value = settingsRepository.getSettings()
+        settings = settingsRepository.getSettings()
     }
 
-    val versionTouchCount = remember { mutableStateOf(0) }
+    var versionTouchCount by remember { mutableStateOf(0) }
     val debugInfo = BuildConfig.SUBWAY_INFO_API_KEY
 
     Scaffold(
-        vignette = { Vignette(vignettePosition = vignettePosition.value) },
+        vignette = { Vignette(vignettePosition = vignettePosition) },
         timeText = {
             TimeText()
         }
@@ -56,7 +55,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                     modifier = Modifier.fillMaxSize(),
                     onClick = { navController.navigate("settings/count") },
                     label = { Text("개수 설정") },
-                    secondaryLabel = { Text("${settings.value?.count}") },
+                    secondaryLabel = { Text("${settings?.count}") },
                     colors = ChipDefaults.secondaryChipColors(),
                 )
             }
@@ -68,7 +67,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                     label = { Text("대상 역") },
                     secondaryLabel = {
                         Text(
-                            "${settings.value?.targets}",
+                            "${settings?.targets}",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -84,13 +83,13 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                 Chip(
                     modifier = Modifier.fillMaxSize(),
                     onClick = {
-                        versionTouchCount.value += 1
-                        if (versionTouchCount.value >= 5) {
-                            versionTouchCount.value = 0
-                            if (settings.value?.isDebugMode == false) {
+                        versionTouchCount += 1
+                        if (versionTouchCount >= 5) {
+                            versionTouchCount = 0
+                            if (settings?.isDebugMode == false) {
                                 val toast = Toast.makeText(context, "Show Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
-                                settings.value = settings.value?.copy(
+                                settings = settings?.copy(
                                     isDebugMode = true,
                                 )
                                 scope.launch {
@@ -99,7 +98,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                             } else {
                                 val toast = Toast.makeText(context, "Remove Debug Info", Toast.LENGTH_SHORT)
                                 toast.show()
-                                settings.value = settings.value?.copy(
+                                settings = settings?.copy(
                                     isDebugMode = false
                                 )
                                 scope.launch {
@@ -120,7 +119,7 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                 )
             }
 
-            if (settings.value?.isDebugMode == true) {
+            if (settings?.isDebugMode == true) {
                 item {
                     Text(
                         debugInfo,
