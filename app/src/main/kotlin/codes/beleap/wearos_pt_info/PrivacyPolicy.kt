@@ -23,7 +23,7 @@ fun PrivacyPolicy() {
         }
     ) {
         ScalingLazyColumn(
-            contentPadding = PaddingValues(horizontal = 40.dp),
+            contentPadding = PaddingValues(vertical = 40.dp),
             modifier = Modifier
                 .padding(5.dp),
         ) {
