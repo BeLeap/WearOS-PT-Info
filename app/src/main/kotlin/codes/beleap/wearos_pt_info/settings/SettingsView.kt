@@ -5,17 +5,23 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -133,6 +139,21 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                     label = { Text("Version") },
                     secondaryLabel = { Text(BuildConfig.VERSION_NAME) },
                     colors = ChipDefaults.secondaryChipColors(),
+                )
+            }
+
+            item {
+                ClickableText(
+                    text = AnnotatedString(
+                        "개인정보처리방침",
+                        spanStyle = SpanStyle(
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline,
+                        ),
+                    ),
+                    onClick = {
+                      navController.navigate("privacy_policy")
+                    },
                 )
             }
 

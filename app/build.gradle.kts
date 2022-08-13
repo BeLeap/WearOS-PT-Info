@@ -5,7 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.5.31"
+    kotlin("plugin.serialization") version "1.7.10"
 }
 
 val apiKeyPropertiesFile = rootProject.file("apiKey.properties")
@@ -13,12 +13,12 @@ val apiKeyProperties = Properties()
 apiKeyProperties.load(FileInputStream(apiKeyPropertiesFile))
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 26
         versionName = "0.1.5"
 
@@ -29,6 +29,10 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.3.0"
     }
 
     buildTypes {
@@ -62,10 +66,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
     implementation("androidx.compose.material:material-icons-extended:1.2.0")
 
+    val wearOsJetpackComposeVersion = "1.1.0-alpha03"
     // WearOS Jetpack Compose
-    implementation("androidx.wear.compose:compose-foundation:1.0.0")
-    implementation("androidx.wear.compose:compose-material:1.0.0")
-    implementation("androidx.wear.compose:compose-navigation:1.0.0")
+    implementation("androidx.wear.compose:compose-foundation:$wearOsJetpackComposeVersion")
+    implementation("androidx.wear.compose:compose-material:$wearOsJetpackComposeVersion")
+    implementation("androidx.wear.compose:compose-navigation:$wearOsJetpackComposeVersion")
 
     // Volley
     implementation("com.android.volley:volley:1.2.1")
@@ -73,8 +78,11 @@ dependencies {
     // Settings
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+
+    // WebView
+    implementation("com.google.accompanist:accompanist-webview:0.25.1")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }

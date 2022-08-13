@@ -38,5 +38,8 @@ fun MainView(settingStore: DataStore<Settings>) {
                 settingsRepository = settingsRepository,
             )
         }
+        composable("privacy_policy") {
+            PrivacyPolicy()
+        }
     }
 }
