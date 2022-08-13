@@ -130,14 +130,8 @@ fun SettingsView(navController: NavController, settingsRepository: SettingsRepos
                             }
                         }
                     },
-                    label = {
-                        Text(
-                            "Version: ${BuildConfig.VERSION_NAME}",
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                            ),
-                        )
-                    },
+                    label = { Text("Version") },
+                    secondaryLabel = { Text(BuildConfig.VERSION_NAME) },
                     colors = ChipDefaults.secondaryChipColors(),
                 )
             }
