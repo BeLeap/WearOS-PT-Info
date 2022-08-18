@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SubwayArrivalInfoNavView(
+    listState: ScalingLazyListState,
     mainNavController: NavController,
     settingsRepository: SettingsRepository,
 ) {
@@ -39,85 +40,70 @@ fun SubwayArrivalInfoNavView(
 
     SwipeDismissableNavHost(navController = infoNavController, startDestination = "info_list") {
         composable("info_list") {
-            val vignettePosition by remember { mutableStateOf(VignettePosition.TopAndBottom) }
-            val listState = rememberScalingLazyListState()
+            val itemSpacing = 1.dp
+            val scrollOffset = with(LocalDensity.current) {
+                -(itemSpacing / 2).roundToPx()
+            }
 
-            Scaffold(
-                positionIndicator = {
-                    PositionIndicator(
-                        scalingLazyListState = listState,
-                        modifier = Modifier,
-                    )
-                },
-                vignette = { Vignette(vignettePosition = vignettePosition) },
-                timeText = {
-                    TimeText()
-                }
-            ) {
-                val itemSpacing = 1.dp
-                val scrollOffset = with(LocalDensity.current) {
-                    -(itemSpacing / 2).roundToPx()
-                }
+            val focusRequester = remember { FocusRequester() }
+            val scope = rememberCoroutineScope()
+            LaunchedEffect(key1 = Unit) {
+                focusRequester.requestFocus()
+            }
 
-                val focusRequester = remember { FocusRequester() }
-                val scope = rememberCoroutineScope()
-                LaunchedEffect(key1 = Unit) {
-                    focusRequester.requestFocus()
-                }
-
-                ScalingLazyColumn(
-                    contentPadding = PaddingValues(top = 25.dp),
-                    state = listState,
-                    modifier = Modifier
-                        .onRotaryScrollEvent {
-                            scope.launch {
-                                listState.scrollBy(it.verticalScrollPixels)
-                            }
-                            true
+            ScalingLazyColumn(
+                contentPadding = PaddingValues(top = 25.dp),
+                state = listState,
+                modifier = Modifier
+                    .onRotaryScrollEvent {
+                        scope.launch {
+                            listState.scrollBy(it.verticalScrollPixels)
                         }
-                        .focusRequester(focusRequester)
-                        .focusable()
-                        .fillMaxSize()
-                        .padding(horizontal = 10.dp),
-                    autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
-                    verticalArrangement = Arrangement.spacedBy(itemSpacing),
-                ) {
-                    items(settings.targets.size) { idx ->
-                        CompactChip(
-                            onClick = {
-                                infoNavController.navigate("info/$idx")
-                            },
-                            colors = ChipDefaults.secondaryChipColors(),
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            label = {
-                                Text(
-                                    settings.targets[idx],
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            }
-                        )
+                        true
                     }
-
-                    item {
-                        CompactButton(onClick = {
-                            mainNavController.navigate("settings")
-                        }) {
-                            Icon(
-                                Icons.Rounded.Settings,
-                                contentDescription = "Settings",
+                    .focusRequester(focusRequester)
+                    .focusable()
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                autoCentering = AutoCenteringParams(itemOffset = scrollOffset),
+                verticalArrangement = Arrangement.spacedBy(itemSpacing),
+            ) {
+                items(settings.targets.size) { idx ->
+                    CompactChip(
+                        onClick = {
+                            infoNavController.navigate("info/$idx")
+                        },
+                        colors = ChipDefaults.secondaryChipColors(),
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        label = {
+                            Text(
+                                settings.targets[idx],
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
+                    )
+                }
+
+                item {
+                    CompactButton(onClick = {
+                        mainNavController.navigate("settings")
+                    }) {
+                        Icon(
+                            Icons.Rounded.Settings,
+                            contentDescription = "Settings",
+                        )
                     }
                 }
             }
         }
         composable("info/{index}") {
             SubwayArrivalInfoView(
+                listState = listState,
                 target = settings.targets[it.arguments?.getString("index")!!.toInt()],
                 count = settings.count,
                 isDebugMode = settings.isDebugMode ?: false,
