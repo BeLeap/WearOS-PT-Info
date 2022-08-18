@@ -19,8 +19,8 @@ android {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
         targetSdk = 33
-        versionCode = 28
-        versionName = "0.1.7"
+        versionCode = 29
+        versionName = "0.1.8"
 
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
@@ -63,8 +63,8 @@ dependencies {
 
     // General Jetpack Compose
     implementation("androidx.activity:activity-compose:1.5.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
-    implementation("androidx.compose.material:material-icons-extended:1.2.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
+    implementation("androidx.compose.material:material-icons-extended:1.2.1")
 
     val wearOsJetpackComposeVersion = "1.1.0-alpha03"
     // WearOS Jetpack Compose
@@ -78,9 +78,6 @@ dependencies {
     // Settings
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-
-    // WebView
-    implementation("com.google.accompanist:accompanist-webview:0.25.1")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
