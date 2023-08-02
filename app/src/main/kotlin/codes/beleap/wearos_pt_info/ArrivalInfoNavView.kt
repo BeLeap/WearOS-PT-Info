@@ -40,6 +40,7 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import codes.beleap.wearos_pt_info.settings.TargetType
+import codes.beleap.wearos_pt_info.settings.toLabel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,13 +97,8 @@ fun ArrivalInfoNavView(
                         modifier = Modifier
                             .fillMaxSize(),
                         label = {
-                            val typeLabel = when (target.type) {
-                                TargetType.SUBWAY -> "지하철"
-                                TargetType.BUS -> "버스"
-                            }
-
                             Text(
-                                "$typeLabel - ${target.name}",
+                                "${target.type.toLabel()} - ${target.name}",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth(),

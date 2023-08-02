@@ -15,6 +15,10 @@ enum class TargetType {
     SUBWAY,
     BUS,
 }
+fun TargetType.toLabel() = when (this) {
+    TargetType.SUBWAY -> "지하철"
+    TargetType.BUS -> "버스"
+}
 
 @Serializable
 data class Target(
