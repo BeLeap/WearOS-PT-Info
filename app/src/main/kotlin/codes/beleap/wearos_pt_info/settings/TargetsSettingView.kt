@@ -4,37 +4,51 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
-import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.PlusOne
 import androidx.compose.material.icons.rounded.Remove
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.wear.compose.material.AutoCenteringParams
+import androidx.wear.compose.material.ButtonDefaults
+import androidx.wear.compose.material.CompactButton
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.material.rememberScalingLazyListState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TargetsSettingView(
     settingsRepository: SettingsRepository,
@@ -56,7 +70,7 @@ fun TargetsSettingView(
     ) {
         val scope = rememberCoroutineScope()
 
-        var targets: List<String> by remember { mutableStateOf(listOf()) }
+        var targets: List<Target> by remember { mutableStateOf(listOf()) }
         LaunchedEffect(key1 = Unit) {
             targets = settingsRepository.getSettings().targets.toMutableList()
         }
@@ -94,10 +108,10 @@ fun TargetsSettingView(
                 val value = targets[idx]
 
                 BasicTextField(
-                    value = value,
+                    value = value.name,
                     onValueChange = { newValue ->
                         val mutableTargets = targets.toMutableList()
-                        mutableTargets[idx] = newValue
+                        mutableTargets[idx].name = newValue
                         targets = mutableTargets
                     },
                     modifier = Modifier
@@ -122,7 +136,7 @@ fun TargetsSettingView(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            value,
+                            value.name,
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .padding(
@@ -152,7 +166,12 @@ fun TargetsSettingView(
             item {
                 CompactButton(
                     onClick = {
-                        targets = targets + listOf("")
+                        targets = targets + listOf(
+                            Target(
+                                name = "",
+                                type = TargetType.SUBWAY,
+                            )
+                        )
                         scope.launch {
                             settingsRepository.updateTargets(targets)
                         }

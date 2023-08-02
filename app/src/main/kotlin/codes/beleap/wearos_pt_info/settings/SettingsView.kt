@@ -84,7 +84,7 @@ fun SettingsView(
             Chip(
                 modifier = Modifier.fillMaxSize(),
                 onClick = { navController.navigate("settings/targets") },
-                label = { Text("대상 역") },
+                label = { Text("대상") },
                 secondaryLabel = {
                     Text(
                         "${settings?.targets}",

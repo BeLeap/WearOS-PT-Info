@@ -2,6 +2,8 @@ package codes.beleap.wearos_pt_info.settings
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -9,11 +11,26 @@ import java.io.InputStream
 import java.io.OutputStream
 
 @Serializable
+enum class TargetType {
+    SUBWAY,
+    BUS,
+}
+
+@Serializable
+data class Target(
+    var name: String,
+    val type: TargetType,
+)
+
+@Serializable
 data class Settings(
     val count: Int = 5,
-    @Deprecated(message = "Use targets")
-    val target: String? = null,
-    val targets: List<String> = listOf("서울"),
+    val targets: List<Target> = listOf(
+        Target(
+            name = "서울",
+            type = TargetType.SUBWAY
+        )
+    ),
     val isDebugMode: Boolean? = false,
 )
 
@@ -32,6 +49,8 @@ object SettingsSerializer: Serializer<Settings> {
     }
 
     override suspend fun writeTo(t: Settings, output: OutputStream) {
-        output.write(Json.encodeToString(Settings.serializer(), t).encodeToByteArray())
+        withContext(Dispatchers.IO) {
+            output.write(Json.encodeToString(Settings.serializer(), t).encodeToByteArray())
+        }
     }
 }

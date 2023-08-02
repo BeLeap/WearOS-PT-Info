@@ -2,11 +2,20 @@ package codes.beleap.wearos_pt_info
 
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -16,7 +25,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material.AutoCenteringParams
+import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.CompactButton
+import androidx.wear.compose.material.CompactChip
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.ScalingLazyListState
+import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -24,9 +40,8 @@ import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SubwayArrivalInfoNavView(
+fun ArrivalInfoNavView(
     listState: ScalingLazyListState,
     mainNavController: NavController,
     settingsRepository: SettingsRepository,
@@ -77,8 +92,9 @@ fun SubwayArrivalInfoNavView(
                         modifier = Modifier
                             .fillMaxSize(),
                         label = {
+                            val target = settings.targets[idx]
                             Text(
-                                settings.targets[idx],
+                                "${target.type} - ${target.name}",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -101,10 +117,10 @@ fun SubwayArrivalInfoNavView(
                 }
             }
         }
-        composable("info/{index}") {
+        composable("info/subway/{index}") {
             SubwayArrivalInfoView(
                 listState = listState,
-                target = settings.targets[it.arguments?.getString("index")!!.toInt()],
+                target = settings.targets[it.arguments?.getString("index")!!.toInt()].name,
                 count = settings.count,
                 isDebugMode = settings.isDebugMode ?: false,
             )
