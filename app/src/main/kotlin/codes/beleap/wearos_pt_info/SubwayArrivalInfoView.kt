@@ -4,10 +4,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -20,7 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material.AutoCenteringParams
+import androidx.wear.compose.material.CircularProgressIndicator
+import androidx.wear.compose.material.ListHeader
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.ScalingLazyListState
+import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TitleCard
 import codes.beleap.wearos_pt_info.dto.SubwayArrivalInfoResponse
 import codes.beleap.wearos_pt_info.dto.mapSubwayIdToLineNumber
 import com.android.volley.toolbox.JsonObjectRequest
@@ -31,7 +47,6 @@ import org.json.JSONException
 import java.time.Duration
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SubwayArrivalInfoView(
     listState: ScalingLazyListState,

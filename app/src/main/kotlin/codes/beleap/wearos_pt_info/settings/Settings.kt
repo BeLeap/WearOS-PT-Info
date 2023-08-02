@@ -22,7 +22,7 @@ fun TargetType.toLabel() = when (this) {
 
 @Serializable
 data class Target(
-    var name: String,
+    val name: String,
     val type: TargetType,
 )
 

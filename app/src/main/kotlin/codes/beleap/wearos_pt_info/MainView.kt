@@ -56,6 +56,7 @@ fun MainView(settingStore: DataStore<Settings>) {
             composable("settings/targets") {
                 TargetsSettingView(
                     settingsRepository = settingsRepository,
+                    mainNavController = navController,
                 )
             }
             composable("privacy_policy") {
