@@ -23,6 +23,7 @@ import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.AutoCenteringParams
@@ -38,6 +39,7 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
+import codes.beleap.wearos_pt_info.settings.TargetType
 import kotlinx.coroutines.launch
 
 @Composable
@@ -84,17 +86,23 @@ fun ArrivalInfoNavView(
                 verticalArrangement = Arrangement.spacedBy(itemSpacing),
             ) {
                 items(settings.targets.size) { idx ->
+                    val target = settings.targets[idx]
+
                     CompactChip(
                         onClick = {
-                            infoNavController.navigate("info/$idx")
+                            infoNavController.navigate("info/${target.type.name.lowercase()}/$idx")
                         },
                         colors = ChipDefaults.secondaryChipColors(),
                         modifier = Modifier
                             .fillMaxSize(),
                         label = {
-                            val target = settings.targets[idx]
+                            val typeLabel = when (target.type) {
+                                TargetType.SUBWAY -> "지하철"
+                                TargetType.BUS -> "버스"
+                            }
+
                             Text(
-                                "${target.type} - ${target.name}",
+                                "$typeLabel - ${target.name}",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .fillMaxWidth(),
