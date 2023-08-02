@@ -3,9 +3,9 @@ import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 val apiKeyPropertiesFile = rootProject.file("apiKey.properties")
@@ -32,7 +32,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0"
+        kotlinCompilerExtensionVersion = "1.4.4"
     }
 
     buildTypes {
@@ -44,29 +44,30 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildToolsVersion = "30.0.3"
+    namespace = "codes.beleap.wearos_pt_info"
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("com.google.android.gms:play-services-wearable:17.1.0")
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("com.google.android.gms:play-services-wearable:18.0.0")
     implementation("androidx.percentlayout:percentlayout:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 
     // General Jetpack Compose
-    implementation("androidx.activity:activity-compose:1.5.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
-    implementation("androidx.compose.material:material-icons-extended:1.2.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
 
-    val wearOsJetpackComposeVersion = "1.1.0-alpha03"
+    val wearOsJetpackComposeVersion = "1.1.2"
     // WearOS Jetpack Compose
     implementation("androidx.wear.compose:compose-foundation:$wearOsJetpackComposeVersion")
     implementation("androidx.wear.compose:compose-material:$wearOsJetpackComposeVersion")
