@@ -25,8 +25,13 @@ android {
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
         )
+
+        buildConfigField("String", "BUS_INFO_API_KEY",
+            apiKeyProperties["BUS_INFO_API_KEY"] as String
+        )
     }
 
+    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
     }
@@ -51,6 +56,7 @@ android {
         jvmTarget = "17"
     }
 
+    @Suppress("UnstableApiUsage")
     buildToolsVersion = "30.0.3"
     namespace = "codes.beleap.wearos_pt_info"
 }
@@ -79,6 +85,11 @@ dependencies {
     // Settings
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+
+    // Retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-simplexml:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.8.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

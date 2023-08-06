@@ -49,7 +49,8 @@ fun SettingsView(
     }
 
     var versionTouchCount by remember { mutableStateOf(0) }
-    val debugInfo = BuildConfig.SUBWAY_INFO_API_KEY
+    val subwayApiKey = BuildConfig.SUBWAY_INFO_API_KEY
+    val busApiKey = BuildConfig.BUS_INFO_API_KEY
 
     val itemSpacing = 6.dp
     val scope = rememberCoroutineScope()
@@ -160,7 +161,15 @@ fun SettingsView(
         if (settings?.isDebugMode == true) {
             item {
                 Text(
-                    debugInfo,
+                    subwayApiKey,
+                    style = TextStyle(
+                        fontSize = 9.sp,
+                    ),
+                )
+            }
+            item {
+                Text(
+                    busApiKey,
                     style = TextStyle(
                         fontSize = 9.sp,
                     ),

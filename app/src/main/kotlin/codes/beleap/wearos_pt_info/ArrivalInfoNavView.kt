@@ -23,7 +23,6 @@ import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.AutoCenteringParams
@@ -39,7 +38,6 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import codes.beleap.wearos_pt_info.settings.Settings
 import codes.beleap.wearos_pt_info.settings.SettingsRepository
-import codes.beleap.wearos_pt_info.settings.TargetType
 import codes.beleap.wearos_pt_info.settings.toLabel
 import kotlinx.coroutines.launch
 
@@ -126,6 +124,13 @@ fun ArrivalInfoNavView(
                 listState = listState,
                 target = settings.targets[it.arguments?.getString("index")!!.toInt()].name,
                 count = settings.count,
+                isDebugMode = settings.isDebugMode ?: false,
+            )
+        }
+        composable("info/bus/{index}") {
+            BusArrivalInfoView(
+                listState = listState,
+                target = settings.targets[it.arguments?.getString("index")!!.toInt()].name,
                 isDebugMode = settings.isDebugMode ?: false,
             )
         }
