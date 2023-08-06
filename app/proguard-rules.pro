@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class android.content.res.XmlResourceParser
+-keep class org.xmlpull.v1.XmlPullParser
+-dontwarn android.content.res.XmlResourceParser
+-dontwarn org.xmlpull.v1.XmlPullParser
