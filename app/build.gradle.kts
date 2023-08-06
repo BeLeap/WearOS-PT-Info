@@ -79,9 +79,6 @@ dependencies {
     implementation("androidx.wear.compose:compose-material:$wearOsJetpackComposeVersion")
     implementation("androidx.wear.compose:compose-navigation:$wearOsJetpackComposeVersion")
 
-    // Volley
-    implementation("com.android.volley:volley:1.2.1")
-
     // Settings
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
