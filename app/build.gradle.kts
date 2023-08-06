@@ -19,8 +19,8 @@ android {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
         targetSdk = 33
-        versionCode = 34
-        versionName = "1.0.4"
+        versionCode = 35
+        versionName = "1.0.5"
 
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String

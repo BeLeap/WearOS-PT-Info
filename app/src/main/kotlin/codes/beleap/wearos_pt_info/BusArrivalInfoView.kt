@@ -29,7 +29,7 @@ fun BusArrivalInfoView(
     }
 
     LaunchedEffect(key1 = Unit) {
-        response = stationInfoClient.getStationByUid(apiKey, "24168")
+        response = stationInfoClient.getStationByUid(apiKey, target)
     }
 
 
