@@ -24,3 +24,7 @@
 -keep class org.xmlpull.v1.XmlPullParser
 -dontwarn android.content.res.XmlResourceParser
 -dontwarn org.xmlpull.v1.XmlPullParser
+
+-dontnote okhttp3.**, okio.**, retrofit2.**
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
