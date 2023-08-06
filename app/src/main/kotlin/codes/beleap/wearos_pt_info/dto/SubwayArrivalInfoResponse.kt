@@ -1,43 +1,19 @@
 package codes.beleap.wearos_pt_info.dto
 
-import org.json.JSONObject
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 data class SubwayArrivalInfoResponse(
+    val status: Int,
+    val code: String,
+    val message: String,
     val errorMessage: ErrorMessage,
     val realtimeArrivalList: List<SubwayArrivalInfo>,
-) {
-    companion object {
-        fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfoResponse {
-            val rawList = jsonObject.optJSONArray("realtimeArrivalList")
-            var list: List<SubwayArrivalInfo> = listOf()
-            if (rawList != null) {
-                for (idx in (0 until rawList.length())) {
-                    list = list + SubwayArrivalInfo.fromJsonObject(rawList.getJSONObject(idx))
-                }
-            }
-
-            return SubwayArrivalInfoResponse(
-                errorMessage = ErrorMessage.fromJsonObject(jsonObject.getJSONObject("errorMessage")),
-                realtimeArrivalList = list
-            )
-        }
-    }
-}
+)
 
 data class ErrorMessage(
     val status: Int,
     val message: String,
-) {
-    companion object {
-        fun fromJsonObject(jsonObject: JSONObject): ErrorMessage = ErrorMessage(
-            status = jsonObject.getInt("status"),
-            message = jsonObject.getString("message"),
-        )
-    }
-}
+)
 
 data class SubwayArrivalInfo(
     val subwayId: String,
@@ -45,19 +21,7 @@ data class SubwayArrivalInfo(
     var barvlDt: Long,
     val recptnDt: LocalDateTime,
     val arvlMsg2: String,
-) {
-    companion object {
-        private val localDatePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-        fun fromJsonObject(jsonObject: JSONObject): SubwayArrivalInfo = SubwayArrivalInfo(
-            subwayId = jsonObject.getString("subwayId"),
-            trainLineNm = jsonObject.getString("trainLineNm"),
-            barvlDt = jsonObject.getLong("barvlDt"),
-            recptnDt = LocalDateTime.parse(jsonObject.getString("recptnDt").split('.').first(), localDatePattern),
-            arvlMsg2 = jsonObject.getString("arvlMsg2"),
-        )
-    }
-}
+)
 
 fun mapSubwayIdToLineNumber(subwayId: String): String = when (subwayId) {
     "1001" -> "1호선"
