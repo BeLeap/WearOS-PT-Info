@@ -20,7 +20,7 @@ android {
         minSdk = 30
         targetSdk = 33
         versionCode = 29
-        versionName = "0.1.8"
+        versionName = "1.0.0"
 
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
