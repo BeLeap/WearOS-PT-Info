@@ -19,8 +19,8 @@ android {
         applicationId = "codes.beleap.wearos_pt_info"
         minSdk = 30
         targetSdk = 33
-        versionCode = 35
-        versionName = "1.0.5"
+        versionCode = 36
+        versionName = "1.0.6"
 
         buildConfigField("String", "SUBWAY_INFO_API_KEY",
             apiKeyProperties["SUBWAY_INFO_API_KEY"] as String
@@ -31,7 +31,6 @@ android {
         )
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
     }
@@ -56,7 +55,6 @@ android {
         jvmTarget = "17"
     }
 
-    @Suppress("UnstableApiUsage")
     buildToolsVersion = "30.0.3"
     namespace = "codes.beleap.wearos_pt_info"
 }
