@@ -185,7 +185,7 @@ fun TargetsSettingView(
                                 modifier = Modifier
                                     .width(80.dp)
                                     .semantics {
-                                       contentDescription = "Update target type of target $idx"
+                                        contentDescription = "Update target type of target $idx"
                                     },
                             )
 
@@ -217,11 +217,11 @@ fun TargetsSettingView(
                                 Text(
                                     nameValue.text,
                                     modifier = Modifier
-                                        .padding(
-                                            horizontal = 25.dp,
-                                        ),
-                                    maxLines = 2,
+                                        .padding(5.dp)
+                                        .fillMaxSize(),
+                                    maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Center,
                                 )
                             }
 
