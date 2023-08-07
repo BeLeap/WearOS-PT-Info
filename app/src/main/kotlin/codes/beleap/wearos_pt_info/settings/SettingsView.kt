@@ -97,7 +97,8 @@ fun SettingsView(
                 label = { Text("대상") },
                 secondaryLabel = {
                     Text(
-                        "${settings?.targets}",
+                        settings?.targets?.joinToString(" / ") { "${it.type.toLabel()} - ${it.name}" }
+                            ?: "",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
