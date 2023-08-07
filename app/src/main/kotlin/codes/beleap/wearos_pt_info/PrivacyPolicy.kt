@@ -46,7 +46,7 @@ fun PrivacyPolicy() {
                             "\n" +
                             "▶ 개인정보 보호책임자\n" +
                             "성명 : 장창서\n" +
-                            "연락처 : beleap@beleap.codes\n" +
+                            "연락처 : beleap@beleap.dev\n" +
                             "※ 개인정보 보호 담당자로 연결됩니다.\n" +
                             "\n" +
                             "3. 개인정보 처리방침 변경\n" +
