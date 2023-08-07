@@ -55,7 +55,7 @@ android {
         jvmTarget = "17"
     }
 
-    buildToolsVersion = "30.0.3"
+    buildToolsVersion = "33.0.1"
     namespace = "codes.beleap.wearos_pt_info"
 }
 
