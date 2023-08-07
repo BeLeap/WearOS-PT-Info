@@ -33,6 +33,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -181,7 +183,10 @@ fun TargetsSettingView(
                                     )
                                 },
                                 modifier = Modifier
-                                    .width(80.dp),
+                                    .width(80.dp)
+                                    .semantics {
+                                       contentDescription = "Update target type of target $idx"
+                                    },
                             )
 
                             var nameValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
