@@ -62,6 +62,9 @@ fun MainView(settingStore: DataStore<Settings>) {
             composable("privacy_policy") {
                 PrivacyPolicy()
             }
+            composable("data_provider") {
+                DataProvider()
+            }
         }
     }
 }

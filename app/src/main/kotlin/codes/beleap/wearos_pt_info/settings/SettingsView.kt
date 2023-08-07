@@ -158,6 +158,21 @@ fun SettingsView(
             )
         }
 
+        item {
+            ClickableText(
+                text = AnnotatedString(
+                    "정보 제공처",
+                    spanStyle = SpanStyle(
+                        color = Color.White,
+                        textDecoration = TextDecoration.Underline,
+                    ),
+                ),
+                onClick = {
+                    navController.navigate("data_provider")
+                },
+            )
+        }
+
 
         if (settings?.isDebugMode == true) {
             item {
