@@ -1,6 +1,5 @@
 package codes.beleap.wearos_pt_info.settings
 
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalDensity
@@ -107,19 +106,22 @@ fun TargetsSettingView(
                     Picker(
                         state = pickerState,
                         contentDescription = "Select target type",
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {optionIdx ->
                         Text(
                             text = TargetType.values()[optionIdx].toLabel(),
                             fontSize = 5.em,
                         )
                     }
-                    CompactButton(onClick = {
-                        val mutableTargets = targets.toMutableList()
-                        mutableTargets[idx] = target.copy(type = TargetType.values()[pickerState.selectedOption])
-                        targets = mutableTargets
-                        navController.popBackStack()
-                    }) {
+                    CompactButton(
+                        onClick = {
+                            val mutableTargets = targets.toMutableList()
+                            mutableTargets[idx] = target.copy(type = TargetType.values()[pickerState.selectedOption])
+                            targets = mutableTargets
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
                         Icon(Icons.Rounded.Save, "Save")
                     }
                 }
@@ -177,7 +179,7 @@ fun TargetsSettingView(
                                     )
                                 },
                                 modifier = Modifier
-                                    .width(100.dp),
+                                    .width(80.dp),
                             )
 
                             var nameValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -202,6 +204,8 @@ fun TargetsSettingView(
                                     }
                                 ),
                                 singleLine = true,
+                                modifier = Modifier
+                                    .width(80.dp),
                             ) {
                                 Text(
                                     nameValue.text,
@@ -220,7 +224,8 @@ fun TargetsSettingView(
                                     mutableTargets.removeAt(idx)
                                     targets = mutableTargets
                                 },
-                                colors = ButtonDefaults.secondaryButtonColors()
+                                colors = ButtonDefaults.secondaryButtonColors(),
+                                modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(Icons.Rounded.Remove, "Remove $idx")
                             }
