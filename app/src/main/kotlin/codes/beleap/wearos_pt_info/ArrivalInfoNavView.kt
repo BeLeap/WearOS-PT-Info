@@ -108,9 +108,11 @@ fun ArrivalInfoNavView(
                 }
 
                 item {
-                    CompactButton(onClick = {
-                        mainNavController.navigate("settings")
-                    }) {
+                    CompactButton(
+                        onClick = {
+                            mainNavController.navigate("settings")
+                        },
+                    ) {
                         Icon(
                             Icons.Rounded.Settings,
                             contentDescription = "Settings",

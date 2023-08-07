@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import androidx.wear.compose.material.AutoCenteringParams
+import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.CompactButton
@@ -234,35 +235,31 @@ fun TargetsSettingView(
                     }
 
                     item {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.SpaceAround,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            CompactButton(
-                                onClick = {
-                                    targets = targets + listOf(
-                                        Target(
-                                            name = "",
-                                            type = TargetType.SUBWAY,
-                                        )
+                        Button(
+                            onClick = {
+                                targets = targets + listOf(
+                                    Target(
+                                        name = "",
+                                        type = TargetType.SUBWAY,
                                     )
-                                },
-                                colors = ButtonDefaults.secondaryButtonColors()
-                            ) {
-                                Icon(Icons.Rounded.Add, "Add")
-                            }
+                                )
+                            },
+                            colors = ButtonDefaults.secondaryButtonColors(),
+                        ) {
+                            Icon(Icons.Rounded.Add, "Add", modifier = Modifier.fillMaxSize())
+                        }
+                    }
 
-                            CompactButton(
-                                onClick = {
-                                    scope.launch {
-                                        settingsRepository.updateTargets(targets.toList())
-                                    }
-                                    mainNavController.popBackStack()
-                                },
-                            ) {
-                                Icon(Icons.Rounded.Save, "Save")
-                            }
+                    item {
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    settingsRepository.updateTargets(targets.toList())
+                                }
+                                mainNavController.popBackStack()
+                            },
+                        ) {
+                            Icon(Icons.Rounded.Save, "Save")
                         }
                     }
                 }
