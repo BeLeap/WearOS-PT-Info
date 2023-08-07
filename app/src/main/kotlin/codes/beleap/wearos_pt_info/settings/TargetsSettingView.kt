@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -106,7 +107,7 @@ fun TargetsSettingView(
                     Picker(
                         state = pickerState,
                         contentDescription = "Select target type",
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.size(100.dp),
                     ) {optionIdx ->
                         Text(
                             text = TargetType.values()[optionIdx].toLabel(),
