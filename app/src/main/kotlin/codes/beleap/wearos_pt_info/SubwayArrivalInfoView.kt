@@ -43,7 +43,7 @@ fun SubwayArrivalInfoView(
         if (arrivalInfoResponse.status == 500 && arrivalInfoResponse.code == "INFO-200") {
             listOf(
                 CardInfo(
-                    title = arrivalInfoResponse.message,
+                    title = arrivalInfoResponse.message ?: "",
                     content = {},
                 )
             )

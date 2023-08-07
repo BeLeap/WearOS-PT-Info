@@ -1,11 +1,9 @@
 package codes.beleap.wearos_pt_info.dto
 
-import java.time.LocalDateTime
-
 data class SubwayArrivalInfoResponse(
-    val status: Int,
-    val code: String,
-    val message: String,
+    val status: Int?,
+    val code: String?,
+    val message: String?,
     val errorMessage: ErrorMessage,
     val realtimeArrivalList: List<SubwayArrivalInfo>,
 )
@@ -19,7 +17,6 @@ data class SubwayArrivalInfo(
     val subwayId: String,
     val trainLineNm: String,
     var barvlDt: Long,
-    val recptnDt: LocalDateTime,
     val arvlMsg2: String,
 )
 
