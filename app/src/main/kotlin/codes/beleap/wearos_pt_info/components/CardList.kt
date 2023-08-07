@@ -2,7 +2,7 @@ package codes.beleap.wearos_pt_info.components
 
 import android.widget.Toast
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -61,7 +61,7 @@ fun CardList(
         modifier = Modifier
             .onRotaryScrollEvent {
                 coroutineScope.launch {
-                    listState.scrollBy(it.verticalScrollPixels)
+                    listState.animateScrollBy(it.verticalScrollPixels)
                 }
                 true
             }

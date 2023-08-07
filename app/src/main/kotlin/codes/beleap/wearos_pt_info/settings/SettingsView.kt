@@ -2,7 +2,7 @@ package codes.beleap.wearos_pt_info.settings
 
 import android.widget.Toast
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,7 +65,7 @@ fun SettingsView(
         modifier = Modifier
             .onRotaryScrollEvent {
                 scope.launch {
-                    listState.scrollBy(it.verticalScrollPixels)
+                    listState.animateScrollBy(it.verticalScrollPixels)
                 }
                 true
             }

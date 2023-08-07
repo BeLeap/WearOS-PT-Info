@@ -1,7 +1,7 @@
 package codes.beleap.wearos_pt_info
 
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -73,7 +73,7 @@ fun ArrivalInfoNavView(
                 modifier = Modifier
                     .onRotaryScrollEvent {
                         scope.launch {
-                            listState.scrollBy(it.verticalScrollPixels)
+                            listState.animateScrollBy(it.verticalScrollPixels)
                         }
                         true
                     }
