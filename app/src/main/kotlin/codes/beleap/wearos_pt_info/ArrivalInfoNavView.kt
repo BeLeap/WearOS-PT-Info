@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.wear.compose.material.AutoCenteringParams
+import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.CompactButton
-import androidx.wear.compose.material.CompactChip
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListState
@@ -56,7 +56,7 @@ fun ArrivalInfoNavView(
 
     SwipeDismissableNavHost(navController = infoNavController, startDestination = "info_list") {
         composable("info_list") {
-            val itemSpacing = 1.dp
+            val itemSpacing = 6.dp
             val scrollOffset = with(LocalDensity.current) {
                 -(itemSpacing / 2).roundToPx()
             }
@@ -87,7 +87,7 @@ fun ArrivalInfoNavView(
                 items(settings.targets.size) { idx ->
                     val target = settings.targets[idx]
 
-                    CompactChip(
+                    Chip(
                         onClick = {
                             infoNavController.navigate("info/${target.type.name.lowercase()}/$idx")
                         },
