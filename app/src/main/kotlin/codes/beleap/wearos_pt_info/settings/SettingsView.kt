@@ -1,5 +1,7 @@
 package codes.beleap.wearos_pt_info.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -20,6 +22,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -144,6 +147,9 @@ fun SettingsView(
         }
 
         item {
+            val context = LocalContext.current
+            val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/document/d/e/2PACX-1vQ7oMr3cEgDmB6L_oo_LVZ56nIdkYmyx6PKPLf__UIbHqEyeD1860FkWOKLDnEdyxQYay9RpTh8BIH6/pub")) }
+
             ClickableText(
                 text = AnnotatedString(
                     "개인정보처리방침",
@@ -153,7 +159,7 @@ fun SettingsView(
                     ),
                 ),
                 onClick = {
-                    navController.navigate("privacy_policy")
+                  context.startActivity(intent)
                 },
             )
         }
