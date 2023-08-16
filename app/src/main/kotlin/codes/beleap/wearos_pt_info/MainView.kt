@@ -59,9 +59,6 @@ fun MainView(settingStore: DataStore<Settings>) {
                     mainNavController = navController,
                 )
             }
-            composable("privacy_policy") {
-                PrivacyPolicy()
-            }
             composable("data_provider") {
                 DataProvider()
             }
